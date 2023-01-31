@@ -1,10 +1,30 @@
 version: '3.4'
 
 services:
-  myappapi:
-    image: mash404/my-app-api-image
-    build:
-      context: .
-      dockerfile: ./Dockerfile
+  db:
+    image: postgres:13.1-alpine
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: 12345
+      POSTGRES_DB: book-review
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
     ports:
-      - 8000:8000
+      - "5432:5432"
+  
+  backend:
+    image: book-review-backend
+    build: backend/
+    command: python manage.py runserver 0.0.0.0:8000
+
+    env_file:
+      - backend/book_api/.env
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      
+volumes:
+  postgres_data:

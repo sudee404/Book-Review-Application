@@ -6,7 +6,7 @@
 			"label": "docker-build",
 			"platform": "python",
 			"dockerBuild": {
-				"tag": "myappapi:latest",
+				"tag": "bookreviewapplication:latest",
 				"dockerfile": "${workspaceFolder}/Dockerfile",
 				"context": "${workspaceFolder}",
 				"pull": true
@@ -15,9 +15,7 @@
 		{
 			"type": "docker-run",
 			"label": "docker-run: debug",
-			"dependsOn": [
-				"docker-build"
-			],
+			"dependsOn": ["docker-build"],
 			"python": {
 				"args": [
 					"runserver",
@@ -25,7 +23,7 @@
 					"--nothreading",
 					"--noreload"
 				],
-				"file": "manage.py"
+				"file": "backend/manage.py"
 			}
 		}
 	]
