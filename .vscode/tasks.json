@@ -25,6 +25,15 @@
 				],
 				"file": "backend/manage.py"
 			}
+		},
+		{
+			"type": "docker-run",
+			"label": "docker-run: release",
+			"dependsOn": ["docker-build"],
+			"platform": "node",
+			"node": {
+				"package": "${workspaceFolder}/frontend/package.json"
+			}
 		}
 	]
 }

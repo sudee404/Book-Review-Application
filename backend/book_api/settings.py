@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
+import datetime
 from pathlib import Path
 import os
 from dotenv import load_dotenv
@@ -28,7 +29,8 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG')
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(' ')
+# ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(' ')
+ALLOWED_HOSTS = ['*',]
 
 
 # Application definition
@@ -141,3 +143,8 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10
 }
+
+# JWT settings
+JWT_SECRET_KEY = os.getenv('SECRET_KEY')
+JWT_ALGORITHM = 'HS256'
+JWT_EXPIRATION_DELTA = datetime.timedelta(hours=24)

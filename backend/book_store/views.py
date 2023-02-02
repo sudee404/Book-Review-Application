@@ -1,15 +1,15 @@
-from rest_framework import viewsets
-from .models import Author, Book, BookReview
 from .serializers import AuthorSerializer, BookReviewSerializer, BookSerializer
-from django.contrib.auth import get_user_model
-from rest_framework import generics, permissions
-
-# Create your views here.
-
-from django.contrib.auth import authenticate, login, logout
-from rest_framework import status, views
-from rest_framework.response import Response
+from django.contrib.auth import authenticate, logout, get_user_model
+from rest_framework import status, views, viewsets
 from .serializers import LoginSerializer, UserSerializer
+from .models import Author, Book, BookReview
+from rest_framework.response import Response
+from django.conf import settings
+from jwt import encode as jwt_encode
+import requests
+import datetime
+
+User = get_user_model()
 
 
 class LoginView(views.APIView):
@@ -23,8 +23,26 @@ class LoginView(views.APIView):
             password = serializer.data['password']
             user = authenticate(username=username, password=password)
             if user:
-                login(request, user)
-                return Response(UserSerializer(user).data)
+                # Generate JWT token
+                payload = {
+                    "id": user.id,
+                    "username": user.username,
+                }
+
+                # Get the JWT expiration delta from Django settings
+                jwt_expiration_delta = getattr(
+                    settings, "JWT_EXPIRATION_DELTA", None)
+                if not jwt_expiration_delta:
+                    raise AttributeError(
+                        "Invalid JWT expiration delta setting")
+
+                payload["exp"] = datetime.datetime.utcnow() + \
+                    jwt_expiration_delta
+                token = jwt_encode(
+                    payload, settings.JWT_SECRET_KEY, settings.JWT_ALGORITHM
+                )
+
+                return Response({'message': 'Login successful', "token": token})
             return Response({"error": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -39,9 +57,28 @@ class RegisterView(views.APIView):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
-            return Response(UserSerializer(user).data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            # Generate JWT token
+            payload = {
+                "id": user.id,
+                "username": user.username,
+            }
 
+            # Get the JWT expiration delta from Django settings
+            jwt_expiration_delta = getattr(
+                settings, "JWT_EXPIRATION_DELTA", None)
+            if not jwt_expiration_delta:
+                raise AttributeError(
+                    "Invalid JWT expiration delta setting")
+
+            payload["exp"] = datetime.datetime.utcnow() + \
+                jwt_expiration_delta
+            
+            token = jwt_encode(
+                payload, settings.JWT_SECRET_KEY, settings.JWT_ALGORITHM
+            )
+            return Response({'message': 'Registration successful', "token": token}, status=status.HTTP_201_CREATED)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class BookViewSet(viewsets.ModelViewSet):
@@ -56,7 +93,7 @@ class BookReviewViewSet(viewsets.ModelViewSet):
     queryset = BookReview.objects.all().order_by('created_at')
     serializer_class = BookReviewSerializer
     permission_classes = []
-    
+
 
 class AuthorViewSet(viewsets.ModelViewSet):
     """This is the viewset that handles all actions at /projects endpoint"""
@@ -65,26 +102,24 @@ class AuthorViewSet(viewsets.ModelViewSet):
     permission_classes = []
 
 
-def create_book(request):
-    isbn = request.POST.get("isbn")
-    book_data = fetch_book_data(isbn)
+def load_books_from_api():
+    # Make the API request
+    response = requests.get("https://openlibrary.org/api/books")
 
-    if not book_data:
-        return redirect("create_book")
+    # Parse the response data
+    data = response.json()
+    books = data["books"]
 
-    book_info = book_data[f"ISBN:{isbn}"]
-    title = book_info["title"]
-    author_name = book_info["authors"][0]["name"]
-    publication_date = book_info["publish_date"]
-    description = book_info.get("notes", "")
+    # Loop through the books and add them to the database
+    for book in books:
+        author, created = Author.objects.get_or_create(
+            name=book["author"]
+        )
 
-    author, _ = Author.objects.get_or_create(name=author_name)
-
-    Book.objects.create(
-        title=title,
-        author=author,
-        description=description,
-        publication_date=publication_date,
-    )
-
-    return redirect("book_list")
+        book_instance = Book(
+            title=book["title"],
+            author=author,
+            publication_date=book["publication_date"],
+            # Add other fields as required
+        )
+        book_instance.save()
