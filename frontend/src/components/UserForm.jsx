@@ -25,7 +25,7 @@ export default function UserForm() {
 	return (
 		<MDBContainer className="p-3 my-5 d-flex flex-column  w-sm-90 w-lg-50">
 
-			<MDBTabs pills justify className='mb-3 d-flex flex-row justify-content-between align-items-center'>
+			<MDBTabs pills justify className='mb-3 d-flex flex-row justify-content-between align-items-center mx-0'>
 				<MDBTabsItem>
 					<MDBTabsLink onClick={() => handleJustifyClick('tab1')} active={justifyActive === 'tab1'}>
 						Login

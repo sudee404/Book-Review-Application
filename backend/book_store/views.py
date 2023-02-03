@@ -21,6 +21,7 @@ class LoginView(views.APIView):
         if serializer.is_valid(raise_exception=True):
             username = serializer.data['username']
             password = serializer.data['password']
+            print(f'\n\n{username} : {password}\n\n')
             user = authenticate(username=username, password=password)
             if user:
                 # Generate JWT token
@@ -42,7 +43,7 @@ class LoginView(views.APIView):
                     payload, settings.JWT_SECRET_KEY, settings.JWT_ALGORITHM
                 )
 
-                return Response({'message': 'Login successful', "token": token})
+                return Response({'message': 'Login successful', "token": token,'userCred':payload})
             return Response({"error": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -55,7 +56,8 @@ class LogoutView(views.APIView):
 class RegisterView(views.APIView):
     def post(self, request, *args, **kwargs):
         serializer = UserSerializer(data=request.data)
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
+            # print(serializer.data)
             user = serializer.save()
             # Generate JWT token
             payload = {
@@ -72,12 +74,12 @@ class RegisterView(views.APIView):
 
             payload["exp"] = datetime.datetime.utcnow() + \
                 jwt_expiration_delta
-            
+
             token = jwt_encode(
                 payload, settings.JWT_SECRET_KEY, settings.JWT_ALGORITHM
             )
-            return Response({'message': 'Registration successful', "token": token}, status=status.HTTP_201_CREATED)
-        
+            return Response({'message': 'Registration successful', "token": token, 'userCred': payload}, status=status.HTTP_201_CREATED)
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 

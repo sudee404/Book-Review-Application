@@ -1,11 +1,17 @@
 import './App.css';
-import UserForm from "./components/UserForm";
+import Header from './sections/Header'
+import MainPage from './sections/MainPage';
+import Footer from './sections/Footer';
 
 function App() {
+  					
   return (
     <div className="App">
-      <UserForm />
+      <Header />
+      <MainPage />
+      <Footer/>
     </div>
+    
   );
 }
 
