@@ -21,7 +21,6 @@ class LoginView(views.APIView):
         if serializer.is_valid(raise_exception=True):
             username = serializer.data['username']
             password = serializer.data['password']
-            print(f'\n\n{username} : {password}\n\n')
             user = authenticate(username=username, password=password)
             if user:
                 # Generate JWT token
@@ -57,7 +56,6 @@ class RegisterView(views.APIView):
     def post(self, request, *args, **kwargs):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
-            # print(serializer.data)
             user = serializer.save()
             # Generate JWT token
             payload = {

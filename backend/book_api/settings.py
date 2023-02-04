@@ -85,12 +85,12 @@ WSGI_APPLICATION = 'book_api.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'book-review',
         'USER': 'admin',
         'PASSWORD': '12345',
-        'HOST': '0.0.0.0',
-        'PORT': '5432',
+        'HOST': 'db',
+        'PORT': 5432,
     }
 }
 
