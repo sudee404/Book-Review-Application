@@ -19,15 +19,29 @@ code {
 	font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
 		monospace;
 }
-
+.header{
+	height: 100vh;
+	background:rgba(0, 0, 0, 0.877);
+	background-image: url('./images/books/img6.png');
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-attachment: fixed;
+	background-blend-mode: overlay;
+	transition: all 3s ease-in-out 1s;
+}
 .over {
-	background: #ffffff;
-	color: black;
-	display: flex;
-	align-items: center;
-	transition: display 4s ease-in-out 1s;
+	background: rgba(54, 1, 1, 0.808);
+	color: aliceblue;
+	font-family: Verdana, Geneva, Tahoma, sans-serif;
+	height: 100vh;
+	justify-content: center;
+	transition: all 3s ease-in-out 1s;
 }
 
-.over:hover {
-	display: none;
+.under {
+	background-attachment: scroll;
+	background-blend-mode: overlay;
 }
+/* .over:hover {
+	display: none;
+} */

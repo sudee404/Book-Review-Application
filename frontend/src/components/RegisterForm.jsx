@@ -5,7 +5,7 @@ import Cookies from 'universal-cookie';
 import { useDispatch } from 'react-redux';
 import { setId,setName } from '../redux/userSlice';
 
-const RegisterForm = () => {
+const RegisterForm = (props) => {
 	const [formData, setFormData] = useState({});
 	const [formErrors, setFormErrors] = useState({});
 	const cookies = new Cookies();
@@ -27,6 +27,8 @@ const RegisterForm = () => {
 					cookies.set("token", response.data.token, { path: "/" });
 					dispatch(setId(response.data.userCred['id']))
 					dispatch(setName(response.data.userCred['username']))
+					props.after()
+
 				})
 				.catch((error) => {
 					setFormErrors(error.response.data);

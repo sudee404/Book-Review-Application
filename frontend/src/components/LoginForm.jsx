@@ -6,7 +6,7 @@ import { useDispatch } from 'react-redux';
 import { setId,setName } from '../redux/userSlice';
 
 
-export default function LoginForm() {
+export default function LoginForm(props) {
 	const [formData, setFormData] = useState({});
 	const [formErrors, setFormErrors] = useState({});
 	const cookies = new Cookies();
@@ -30,6 +30,7 @@ export default function LoginForm() {
 					cookies.set("token", response.data.token, { path: "/" });
 					dispatch(setId(response.data.userCred['id']))
 					dispatch(setName(response.data.userCred['username']))
+					props.after()
 				})
 				.catch((error) => {
 					console.log(error)

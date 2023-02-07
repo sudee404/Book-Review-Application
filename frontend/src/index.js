@@ -9,6 +9,16 @@ import { persistStore } from "redux-persist";
 import { PersistGate } from "redux-persist/integration/react";
 import store from "./redux/store";
 import { Provider } from "react-redux";
+import { ChakraProvider} from "@chakra-ui/react";
+import chakraTheme from "@chakra-ui/theme";
+
+// const { Button } = chakraTheme.components;
+
+// const theme = extendBaseTheme({
+// 	components: {
+// 		Button,
+// 	},
+// });
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 const persistor = persistStore(store);
@@ -17,7 +27,9 @@ root.render(
 	<React.StrictMode>
 		<Provider store={store}>
 			<PersistGate persistor={persistor}>
-				<App />
+				<ChakraProvider>
+					<App />
+				</ChakraProvider>
 			</PersistGate>
 		</Provider>
 	</React.StrictMode>

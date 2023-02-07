@@ -1,8 +1,5 @@
 import React from "react";
 import Img1 from "../images/books/img1.png";
-import Img2 from "../images/books/img5.png";
-import Img3 from "../images/books/img2.png";
-import Img4 from "../images/books/img3.png";
 import Img5 from "../images/books/img6.png";
 import Bmg1 from "../images/backgrounds/img9.png";
 function MainPage() {
@@ -36,45 +33,7 @@ function MainPage() {
 					</p>
 				</div>
 			</div>
-			<div className="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 g-4 my-5 px-4 mx-0">
-				<div className="col">
-					<div className="card border-0">
-						<img src={Img2} className="card-img-top" alt="..." />
-						<div className="card-body">
-							<h5 className="card-title fw-bold">Discover</h5>
-							<p className="card-text">
-								Discover new and exciting titles, connect with
-								like-minded individuals, and find your next
-								great read.
-							</p>
-						</div>
-					</div>
-				</div>
-				<div className="col">
-					<div className="card border-0">
-						<img src={Img3} className="card-img-top" alt="..." />
-						<div className="card-body">
-							<h5 className="card-title  fw-bold">Locate</h5>
-							<p className="card-text">
-								Browse our collection of user-generated reviews
-								and ratings,
-							</p>
-						</div>
-					</div>
-				</div>
-				<div className="col">
-					<div className="card border-0">
-						<img src={Img4} className="card-img-top" alt="..." />
-						<div className="card-body">
-							<h5 className="card-title fw-bold">Contribute</h5>
-							<p className="card-text">
-								or add your own and be a part of our thriving
-								book review community.
-							</p>
-						</div>
-					</div>
-				</div>
-			</div>
+			
 			<div className="card bg-dark rounded-0 border-0 text-white h-100 ">
 				<img src={Img5} className="card-img" alt="..." />
 				<div

@@ -1,24 +1,70 @@
 import React from "react";
-import UserForm from "../components/UserForm";
-import { UserProfile } from "../components/UserProfile";
-import { useSelector ,useDispatch} from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { setId, setName } from "../redux/userSlice";
-
+import { Link } from "react-router-dom";
+import { ArrowDownIcon, ChevronDownIcon } from "@chakra-ui/icons";
+import {
+	Modal,
+	ModalOverlay,
+	ModalContent,
+	ModalHeader,
+	ModalFooter,
+	ModalBody,
+	ModalCloseButton,
+	Menu,
+	MenuButton,
+	MenuList,
+	MenuItem,
+	MenuItemOption,
+	MenuGroup,
+	MenuOptionGroup,
+	MenuDivider,
+	Button,
+	useDisclosure,
+} from "@chakra-ui/react";
+import LoginForm from "../components/LoginForm";
+import RegisterForm from "../components/RegisterForm";
+const paths = [
+	["Home", "/"],
+	["About", "about/"],
+	["Books", "books/"],
+	["Authors", "authors/"],
+];
 const Header = () => {
 	const userId = useSelector((state) => state.user.id);
-	// const userName = useSelector((state) => state.user.username);
-	const dispatch = useDispatch()
+	const userName = useSelector((state) => state.user.username);
+	const dispatch = useDispatch();
 	const logOut = () => {
-		dispatch(setId(''))
-		dispatch(setName(''))
-	}
+		dispatch(setId(""));
+		dispatch(setName(""));
+	};
+	const OverlayOne = () => (
+		<ModalOverlay
+			bg="blackAlpha.300"
+			backdropFilter="blur(10px) hue-rotate(90deg)"
+		/>
+	);
+
+	const OverlayTwo = () => (
+		<ModalOverlay
+			bg="none"
+			backdropFilter="auto"
+			backdropInvert="80%"
+			backdropBlur="2px"
+		/>
+	);
+
+	const { isOpen, onOpen, onClose } = useDisclosure();
+	const [overlay, setOverlay] = React.useState(<OverlayOne />);
+	const [element, setElement] = React.useState(<LoginForm />);
+
 	return (
-		<div>
-			<nav className="navbar navbar-expand-lg navbar-light bg-light fixed-top shadow">
-				<div className="container-fluid px-5 py-2 d-flex justify-content-between">
-					<a className="navbar-brand fw-bold fs-3 ms-5" href="#">
-						Read<span className="text-danger">Up</span>
-					</a>
+		<div className="header">
+			<nav className="navbar navbar-expand-lg navbar-dark fw-bolder">
+				<div className="container-fluid p-lg-3 px-lg-5 d-flex justify-content-center-lg">
+					<Link className="navbar-brand col" to="/">
+						ReadUp
+					</Link>
 					<button
 						className="navbar-toggler"
 						type="button"
@@ -30,116 +76,111 @@ const Header = () => {
 					>
 						<span className="navbar-toggler-icon"></span>
 					</button>
-					<ul className="navbar-nav fw-bold text-dark">
-						<li className="nav-item mx-3">
-							<a className="nav-link" href="#">
-								Books
-							</a>
-						</li>
-						<li className="nav-item mx-3">
-							<a className="nav-link" href="#">
-								Authors
-							</a>
-						</li>
-
-						<li className="nav-item mx-3">
-							<a
-								className="nav-link"
-								href="#profile"
-								data-bs-toggle="offcanvas"
-								data-bs-target="#profileTab"
-								aria-controls="profileTab"
-							>
-								Profile
-							</a>
-						</li>
+					<div
+						className="collapse navbar-collapse"
+						col
+						id="navbarSupportedContent"
+					>
+						<ul className="navbar-nav me-auto mb-2 mb-lg-0">
+							{paths.map((item) => {
+								return (
+									<li className="nav-item">
+										<Link
+											className="nav-link mx-2"
+											aria-current="page"
+											to={item[1]}
+										>
+											{item[0]}
+										</Link>
+									</li>
+								);
+							})}
+							{!userId && (
+								<li className="nav-item">
+									<Link
+										className="nav-link mx-2"
+										aria-current="page"
+										to="#login"
+										onClick={() => {
+											setOverlay(<OverlayOne />);
+											setElement(
+												<LoginForm after={onClose} />
+											);
+											onOpen();
+										}}
+									>
+										Sign In
+									</Link>
+								</li>
+							)}
+							{!userId && (
+								<li className="nav-item">
+									<Link
+										type="button"
+										to={"#register"}
+										className="btn btn-primary fw-bolder"
+										ml="4"
+										onClick={() => {
+											setOverlay(<OverlayTwo />);
+											setElement(<RegisterForm after={onClose} />);
+											onOpen();
+										}}
+									>
+										Get Started
+									</Link>
+								</li>
+							)}
+						</ul>
 						{userId && (
-							<li className="nav-item mx-3">
-								<a
-									className="nav-link"
-									href="#"
-									data-bs-toggle="modal"
-									data-bs-target="#exampleModal"
-								>
-									Logout
-								</a>
+							<li className="nav-item">
+								<Menu>
+									<MenuButton
+										as={Button}
+										rightIcon={<ChevronDownIcon />}
+									>
+										Profile
+									</MenuButton>
+									<MenuList>
+										<MenuItem>View Profile</MenuItem>
+										<MenuItem>Dashboard</MenuItem>
+										<MenuItem onClick={logOut}>
+											Logout
+										</MenuItem>
+									</MenuList>
+								</Menu>
 							</li>
 						)}
-					</ul>
+					</div>
 				</div>
 			</nav>
-
-			<div
-				className="offcanvas offcanvas-end"
-				data-bs-scroll="true"
-				tabIndex="-1"
-				id="profileTab"
-				aria-labelledby="profId"
-			>
-				<div className="offcanvas-header">
-					<button
-						type="button"
-						className="btn-close"
-						data-bs-dismiss="offcanvas"
-						aria-label="Close"
-					></button>
-				</div>
-				{!userId ? (
-					<div className="offcanvas-body">
-						<p className="lead">
-							Sign In or Sign Up below to proceed.
-						</p>
-						<UserForm />
+			<div className="row mx-0 h-100 justify-content-center align-items-center  text-light">
+				<div className="col-12 p-2 p-lg-5">
+					<h1 className="fs-1 fw-bolder text-primary">
+						Welcome to ReadUp
+					</h1>
+					<div className="col-12 lead p-lg-5 fw-bold">
+						The ultimate destination for book lovers. Join a
+						community of avid readers who share their thoughts,
+						opinions, and insights on their favorite books.
 					</div>
-				) : (
-					<UserProfile />
-				)}
-			</div>
-
-			<div
-				className="modal fade"
-				id="exampleModal"
-				tabIndex="-1"
-				aria-labelledby="exampleModalLabel"
-				aria-hidden="true"
-			>
-				<div className="modal-dialog        ">
-					<div className="modal-content">
-						<div className="modal-header">
-							<h5 className="modal-title" id="exampleModalLabel">
-								Sign Out
-							</h5>
-							<button
-								type="button"
-								className="btn-close"
-								data-bs-dismiss="modal"
-								aria-label="Close"
-							></button>
-						</div>
-						<div className="modal-body">
-							You are about to log out on this device. Do you wish
-							to proceed with this action ?
-						</div>
-						<div className="modal-footer">
-							<button
-								type="button"
-								className="btn btn-secondary"
-								data-bs-dismiss="modal"
-							>
-								No
-							</button>
-							<button
-								type="button"
-								className="btn btn-primary"
-								data-bs-dismiss="modal"
-								onClick={logOut}
-							>
-								Yes
-							</button>
-						</div>
+					<div className="col-12 lead p-lg-5 fw-bold">
+						<button type="button" className="btn">
+							<ArrowDownIcon boxSize={10} />
+						</button>
 					</div>
 				</div>
 			</div>
+			<Modal isCentered isOpen={isOpen} onClose={onClose}>
+				{overlay}
+				<ModalContent>
+					<ModalHeader>Modal Title</ModalHeader>
+					<ModalCloseButton />
+					<ModalBody>{element}</ModalBody>
+					<ModalFooter>
+						<Button onClick={onClose}>Close</Button>
+					</ModalFooter>
+				</ModalContent>
+			</Modal>
 		</div>
 	);
 };
