@@ -26,19 +26,16 @@ export default function LoginForm(props) {
 		if (formData.username && formData.password) {
 			login(formData)
 				.then((response) => {
-					console.log(response.data.userCred);
 					cookies.set("token", response.data.token, { path: "/" });
 					dispatch(setId(response.data.userCred['id']))
 					dispatch(setName(response.data.userCred['username']))
 					props.after()
 				})
 				.catch((error) => {
-					console.log(error)
 					setFormErrors(error.response.data);
 
 				});
 		} else {
-			console.error('Form data is not properly populated');
 			setFormErrors({ 'error': 'Form data is not properly populated' });
 		}
 	};

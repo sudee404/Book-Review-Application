@@ -6,9 +6,9 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import LoginForm from "./components/LoginForm";
 import RegisterForm from "./components/RegisterForm";
 import { Outlet } from "react-router-dom";
-import Services from "./sections/Services";
 import Products from "./sections/Products";
 import About from "./sections/About";
+import BackToTopButton from "./components/BackToTopButton";
 
 const router = createBrowserRouter([
 	{
@@ -16,11 +16,11 @@ const router = createBrowserRouter([
 		element: (
 			<div className="App">
 				<Header />
-				<Services />
 				<Products />
 				<About/>
 				<Outlet />
 				<Footer />
+				<BackToTopButton/>
 			</div>
 		),
 		errorElement: <ErrorPage />,

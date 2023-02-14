@@ -15,10 +15,6 @@ import {
 	MenuButton,
 	MenuList,
 	MenuItem,
-	MenuItemOption,
-	MenuGroup,
-	MenuOptionGroup,
-	MenuDivider,
 	Button,
 	useDisclosure,
 } from "@chakra-ui/react";
@@ -26,13 +22,11 @@ import LoginForm from "../components/LoginForm";
 import RegisterForm from "../components/RegisterForm";
 const paths = [
 	["Home", "/"],
-	["About", "about/"],
 	["Books", "books/"],
 	["Authors", "authors/"],
 ];
 const Header = () => {
 	const userId = useSelector((state) => state.user.id);
-	const userName = useSelector((state) => state.user.username);
 	const dispatch = useDispatch();
 	const logOut = () => {
 		dispatch(setId(""));
@@ -78,13 +72,12 @@ const Header = () => {
 					</button>
 					<div
 						className="collapse navbar-collapse"
-						col
 						id="navbarSupportedContent"
 					>
 						<ul className="navbar-nav me-auto mb-2 mb-lg-0">
-							{paths.map((item) => {
+							{paths.map((item, idx) => {
 								return (
-									<li className="nav-item">
+									<li className="nav-item" key={idx}>
 										<Link
 											className="nav-link mx-2"
 											aria-current="page"
@@ -122,7 +115,9 @@ const Header = () => {
 										ml="4"
 										onClick={() => {
 											setOverlay(<OverlayTwo />);
-											setElement(<RegisterForm after={onClose} />);
+											setElement(
+												<RegisterForm after={onClose} />
+											);
 											onOpen();
 										}}
 									>
@@ -132,7 +127,7 @@ const Header = () => {
 							)}
 						</ul>
 						{userId && (
-							<li className="nav-item">
+							<li className="nav-item ">
 								<Menu>
 									<MenuButton
 										as={Button}
@@ -158,14 +153,21 @@ const Header = () => {
 					<h1 className="fs-1 fw-bolder text-primary">
 						Welcome to ReadUp
 					</h1>
-					<div className="col-12 lead p-lg-5 fw-bold">
-						The ultimate destination for book lovers. Join a
-						community of avid readers who share their thoughts,
-						opinions, and insights on their favorite books.
+					<div className="col-12 lead p-lg-5 fw-bold d-flex justify-content-center">
+						<div className="col-8">
+							Looking for the perfect place to indulge your
+							passion for books? Look no further than our
+							community of avid readers. Our platform is the
+							ultimate destination for book lovers, where you can
+							share your thoughts, opinions, and insights on your
+							favorite books. Join our community today and connect
+							with like-minded readers who share your love for
+							literature!
+						</div>
 					</div>
 					<div className="col-12 lead p-lg-5 fw-bold">
 						<button type="button" className="btn">
-							<ArrowDownIcon boxSize={10} />
+							<ArrowDownIcon boxSize={10} color="white" />
 						</button>
 					</div>
 				</div>

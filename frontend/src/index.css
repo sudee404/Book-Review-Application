@@ -19,9 +19,10 @@ code {
 	font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
 		monospace;
 }
-.header{
+
+.header {
 	height: 100vh;
-	background:rgba(0, 0, 0, 0.877);
+	background: rgba(0, 0, 0, 0.877);
 	background-image: url('./images/books/img6.png');
 	background-repeat: no-repeat;
 	background-size: cover;
@@ -29,6 +30,7 @@ code {
 	background-blend-mode: overlay;
 	transition: all 3s ease-in-out 1s;
 }
+
 .over {
 	background: rgba(54, 1, 1, 0.808);
 	color: aliceblue;
@@ -42,6 +44,7 @@ code {
 	background-attachment: scroll;
 	background-blend-mode: overlay;
 }
-/* .over:hover {
-	display: none;
-} */
+
+.over:hover {
+	background: rgba(0, 0, 0, 0.877);
+}

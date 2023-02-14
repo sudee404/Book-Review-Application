@@ -1,3 +1,4 @@
+from django.http import JsonResponse
 from .serializers import AuthorSerializer, BookReviewSerializer, BookSerializer
 from django.contrib.auth import authenticate, logout, get_user_model
 from rest_framework import status, views, viewsets
@@ -42,7 +43,7 @@ class LoginView(views.APIView):
                     payload, settings.JWT_SECRET_KEY, settings.JWT_ALGORITHM
                 )
 
-                return Response({'message': 'Login successful', "token": token,'userCred':payload})
+                return Response({'message': 'Login successful', "token": token, 'userCred': payload})
             return Response({"error": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -102,24 +103,3 @@ class AuthorViewSet(viewsets.ModelViewSet):
     permission_classes = []
 
 
-def load_books_from_api():
-    # Make the API request
-    response = requests.get("https://openlibrary.org/api/books")
-
-    # Parse the response data
-    data = response.json()
-    books = data["books"]
-
-    # Loop through the books and add them to the database
-    for book in books:
-        author, created = Author.objects.get_or_create(
-            name=book["author"]
-        )
-
-        book_instance = Book(
-            title=book["title"],
-            author=author,
-            publication_date=book["publication_date"],
-            # Add other fields as required
-        )
-        book_instance.save()

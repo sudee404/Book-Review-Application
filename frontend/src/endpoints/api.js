@@ -13,3 +13,14 @@ export const logout = () => {
 export const register = (formData) => {
 	return axios.post(`${BASE_URL}register/`, formData);
 };
+
+export const search = (query,page=1) => {
+	return axios.get(`https://openlibrary.org/search.json?q=${query}&page=${page}`);
+};
+    
+
+export const details = (id) => {
+	return axios.get(
+		`http://openlibrary.org/api/volumes/brief/id/${id}.json`
+	);
+};
