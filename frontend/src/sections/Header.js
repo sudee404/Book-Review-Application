@@ -22,8 +22,8 @@ import LoginForm from "../components/LoginForm";
 import RegisterForm from "../components/RegisterForm";
 const paths = [
 	["Home", "/"],
-	["Books", "books/"],
-	["Authors", "authors/"],
+	["Find Book", "books/"],
+	["My Books", "my-books/"],
 ];
 const Header = () => {
 	const userId = useSelector((state) => state.user.id);
@@ -51,6 +51,7 @@ const Header = () => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const [overlay, setOverlay] = React.useState(<OverlayOne />);
 	const [element, setElement] = React.useState(<LoginForm />);
+	
 
 	return (
 		<div className="header">
@@ -150,25 +151,24 @@ const Header = () => {
 			</nav>
 			<div className="row mx-0 h-100 justify-content-center align-items-center  text-light">
 				<div className="col-12 p-2 p-lg-5">
-					<h1 className="fs-1 fw-bolder text-primary">
-						Welcome to ReadUp
-					</h1>
-					<div className="col-12 lead p-lg-5 fw-bold d-flex justify-content-center">
-						<div className="col-8">
-							Looking for the perfect place to indulge your
-							passion for books? Look no further than our
-							community of avid readers. Our platform is the
-							ultimate destination for book lovers, where you can
-							share your thoughts, opinions, and insights on your
-							favorite books. Join our community today and connect
-							with like-minded readers who share your love for
-							literature!
+					<div className="p-5 mb-4  rounded-3">
+						<div className="container-fluid py-5">
+							<h1 className="display-4 fw-bold my-3 text-success">
+								Welcome to ReadUp
+							</h1>
+							<p className="col-md-8 mx-auto pt-5">
+								Whether you're seeking adventure, romance, or
+								knowledge, our platform is here to help you find
+								your next great read. So sit back, relax, and
+								let us guide you on an unforgettable literary
+								experience!
+							</p>
 						</div>
-					</div>
-					<div className="col-12 lead p-lg-5 fw-bold">
-						<button type="button" className="btn">
-							<ArrowDownIcon boxSize={10} color="white" />
-						</button>
+						<div className="col-12 lead p-lg-5 fw-bold">
+							<button type="button" className="btn">
+								<ArrowDownIcon boxSize={10} color="white" />
+							</button>
+						</div>
 					</div>
 				</div>
 			</div>

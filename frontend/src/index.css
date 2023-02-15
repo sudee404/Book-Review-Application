@@ -6,9 +6,6 @@ body {
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 	scroll-behavior: smooth;
-	/* background-image: url('./images/backgrounds/img5.png');
-  background-size: cover;
-  background-position: center; */
 }
 
 ::-webkit-scrollbar {

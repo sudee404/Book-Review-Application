@@ -19,8 +19,6 @@ export const search = (query,page=1) => {
 };
     
 
-export const details = (id) => {
-	return axios.get(
-		`http://openlibrary.org/api/volumes/brief/id/${id}.json`
-	);
+export const details = (key) => {
+	return axios.get(`http://openlibrary.org/books${key}.json`);
 };

@@ -1,30 +1,21 @@
-import { Button } from '@chakra-ui/react';
-import React, { useState } from 'react'
+import { Button, Spinner } from '@chakra-ui/react';
+import React, { useEffect, useState } from 'react'
 import { search } from '../endpoints/api';
-import Rating from '../components/Rating';
+import Loader, { LoaderMini } from '../components/Loader';
 import BookModal from '../components/BookModal';
+import BookCard from '../components/BookCard';
 
-const words = ["pirates of the carribean", "persie jackson", "no other man", "buster scruggs", "dear love"];
+const words = ["pirates of the carribean", "lord of the rings", "buster scruggs", "dear love"];
 
 // Generate a random word
-const randomWord = () => words[Math.floor(Math.random() * words.length)];
+const randomWord = words[Math.floor(Math.random() * words.length)];
 
-async function getBooks(){
-	var result = []
-	try {
-		const response = await search(randomWord);
-		result =  response.data.docs;
-	} catch (error) {
-		console.log(error);
-	}
-	return result;
-}
 
 export default function Products() {
 	const [query, setQuery] = useState('')
 	const [loading, setLoading] = useState(false)
-	const [page, setPage] = useState(1)
-	const [books, setBooks] = useState(getBooks)
+	const [books, setBooks] = useState([])
+	const [loading1, setLoading1] = useState(true);
 	const handlechange = (e) => {
 		setQuery(e.target.value);
 	}
@@ -32,7 +23,7 @@ export default function Products() {
 	const handleSearch = (e) => {
 		setLoading(true);
 		if (query) {
-			search(query, page)
+			search(query)
 				.then((response) => {
 					setBooks(response.data.docs);
 					setLoading(false);
@@ -47,63 +38,55 @@ export default function Products() {
 		}
 	};
 
-	return (
-		<div>
-			<div className="pt-4 fs-1 fw-bold text-center ps-4">
-				<span className="text-success ">Search</span> book title
-			</div>
-			<div className="row justify-content-center mx-0">
-				<div className="mb-3 col-6">
-					<input type="text" onChange={handlechange} value={query} className="form-control" id="exampleInputText1" aria-describedby="textHelp" />
-					<div id="textHelp" className="form-text">Enter title to search for.</div>
+	useEffect(() => {
+		search(randomWord)
+			.then((response) => {
+				setBooks(response.data.docs);
+				setLoading1(false);
+			})
+			.catch((error) => {
+				console.log(error);
+				setLoading1(false);
+			});
+	}, []);
+
+
+	return loading1 ? <LoaderMini /> :
+		(
+			<div>
+
+				
+				<div className="row justify-content-center mx-0 mt-4">
+					<div className="mb-3 col-6">
+						<input type="text" onChange={handlechange} value={query} className="form-control" placeholder='whale rider' id="exampleInputText1" aria-describedby="textHelp" />
+						<div id="textHelp" className="form-text"></div>
+					</div>
+					<div className='mb-4'>
+						<Button
+							isLoading={loading}
+							loadingText='searching'
+							colorScheme='teal'
+							variant='outline'
+							spinnerPlacement='end'
+							onClick={handleSearch}
+						>
+							Search
+						</Button>
+					</div>
 				</div>
-				<div className="col-2">
-					<Button
-						isLoading={loading}
-						loadingText='searching'
-						colorScheme='teal'
-						variant='outline'
-						spinnerPlacement='end'
-						onClick={handleSearch}
-					>
-						Search
-					</Button>
-				</div>
-			</div>
-			<div>{books.length === 0 && (
-				<div className="text-center p-5 mb-5">
-					<h2 className='fw-bold fs-1'>
-						No books found
-					</h2>
-				</div>
-			)}
-			</div>
-
-			<div className="container">
-				<div className="row mx-0 g-4 justify-content-evenly">
-					{books.map((book) => (
-						<div className="col-lg-4 col-md-6 col-sm-12" key={book.key}>
-
-							<div className="card border-0 shadow h-100">
-								<img src={book.cover_i ? `http://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg` : "https://dummyimage.com/180x120/dbdbdb/787878.png&text=Image+cap"} className="card-img-top" alt="..." style={{ height: "18rem" }} />
-								<div className="card-body">
-									<h5 className="card-title fw-bold fs-3 text-danger">{book.title.split(' ').slice(0, 4).join(' ')}</h5>
-									<p className="card-text">By <span className='text-success'>{book.author_name || 'Unknown'}</span></p>
-									<div className='py-2'>
-										<Rating value={4} />
-
-									</div>
-
+				<div className="container">
+					<div className="row mx-0 g-4 justify-content-evenly">
+						{books.map((book) => {
+							
+							return (
+								<div className="col-lg-4 col-md-6 col-sm-12" key={book.key}>
+									<BookCard book={book} />
 								</div>
-								<div className="card-footer btn-group g-2" role="group">
-									<BookModal book={book} />
-									<button type="button" className="btn btn-outline-primary">Save</button>
-								</div>
-							</div>
-						</div>
-					))}
+
+							)
+						})}
+					</div>
 				</div>
 			</div>
-		</div>
-	)
+		)
 }

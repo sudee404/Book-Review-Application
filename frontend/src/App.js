@@ -9,6 +9,8 @@ import { Outlet } from "react-router-dom";
 import Products from "./sections/Products";
 import About from "./sections/About";
 import BackToTopButton from "./components/BackToTopButton";
+import Services from "./sections/Services";
+import Reviews from "./sections/Reviews";
 
 const router = createBrowserRouter([
 	{
@@ -16,15 +18,23 @@ const router = createBrowserRouter([
 		element: (
 			<div className="App">
 				<Header />
-				<Products />
-				<About/>
 				<Outlet />
-				<Footer />
-				<BackToTopButton/>
+				<BackToTopButton />
 			</div>
 		),
 		errorElement: <ErrorPage />,
 		children: [
+			{
+				path: "/",
+				element: (
+					<div>
+						<About />
+						<Services />
+						<Reviews />
+						<Footer />
+					</div>
+				),
+			},
 			{
 				path: "signin/",
 				element: <LoginForm />,
@@ -32,6 +42,25 @@ const router = createBrowserRouter([
 			{
 				path: "register/",
 				element: <RegisterForm />,
+			},
+			{
+				path: "books/",
+				element: (
+					<div className="App">
+						<Products />
+						<Footer />
+						<BackToTopButton />
+					</div>
+				),
+			},
+			{
+				path: "my-books/",
+				element: (
+					<div className="App">
+						<Products />
+						<BackToTopButton />
+					</div>
+				),
 			},
 		],
 	},

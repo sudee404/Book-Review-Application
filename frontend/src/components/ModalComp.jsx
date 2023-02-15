@@ -54,10 +54,10 @@ export default function ModalComp() {
 			<Modal isCentered isOpen={isOpen} onClose={onClose}>
 				{overlay}
 				<ModalContent>
-					<ModalHeader>Modal Title</ModalHeader>
+					<ModalHeader>{props.title}</ModalHeader>
 					<ModalCloseButton />
 					<ModalBody>
-							<Text>Custom backdrop filters!</Text>
+							{props.body}
 					</ModalBody>
 					<ModalFooter>
 						<Button onClick={onClose}>Close</Button>
