@@ -33,10 +33,17 @@ class BookSerializer(serializers.HyperlinkedModelSerializer):
         model = Book
         fields = ('__all__')
 
+
 class BookReviewSerializer(serializers.HyperlinkedModelSerializer):
+    user = serializers.HyperlinkedRelatedField(
+        view_name='user-detail',
+        read_only=True
+    )
+
     class Meta:
         model = BookReview
         fields = ('__all__')
+
 
 class AuthorSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:

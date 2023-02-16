@@ -11,13 +11,15 @@ import About from "./sections/About";
 import BackToTopButton from "./components/BackToTopButton";
 import Services from "./sections/Services";
 import Reviews from "./sections/Reviews";
+import NavComp from "./components/NavComp";
+import MyBooks from "./sections/MyBooks";
 
 const router = createBrowserRouter([
 	{
 		path: "/",
 		element: (
 			<div className="App">
-				<Header />
+				<NavComp />
 				<Outlet />
 				<BackToTopButton />
 			</div>
@@ -28,6 +30,7 @@ const router = createBrowserRouter([
 				path: "/",
 				element: (
 					<div>
+						<Header />
 						<About />
 						<Services />
 						<Reviews />
@@ -46,7 +49,17 @@ const router = createBrowserRouter([
 			{
 				path: "books/",
 				element: (
-					<div className="App">
+					<div>
+						<Products />
+						<Footer />
+						<BackToTopButton />
+					</div>
+				),
+			},
+			{
+				path: "clubs/",
+				element: (
+					<div>
 						<Products />
 						<Footer />
 						<BackToTopButton />
@@ -56,8 +69,8 @@ const router = createBrowserRouter([
 			{
 				path: "my-books/",
 				element: (
-					<div className="App">
-						<Products />
+					<div>
+						<MyBooks />
 						<BackToTopButton />
 					</div>
 				),

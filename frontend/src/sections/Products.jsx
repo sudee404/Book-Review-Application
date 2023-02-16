@@ -51,13 +51,18 @@ export default function Products() {
 	}, []);
 
 
-	return loading1 ? <LoaderMini /> :
-		(
-			<div>
+	return (
+		<div>
+			
 
-				
-				<div className="row justify-content-center mx-0 mt-4">
-					<div className="mb-3 col-6">
+			<div className="row justify-content-center mx-0 pt-4">
+				<div className="p-5 mb-4 bg-light rounded-3">
+					<div className="container-fluid py-5">
+						<h1 className="display-5 fw-bold">Find Your Next Great Read</h1>
+						<p className="col-md-8 mx-auto py-3 lead">Explore thousands of books and read reviews from real people to find your next favorite book. Whether you're looking for the latest bestseller, a classic from a beloved author, or something in between, our database has something for everyone.</p>
+
+					</div>
+					<div className="mb-3 col-6 mx-auto">
 						<input type="text" onChange={handlechange} value={query} className="form-control" placeholder='whale rider' id="exampleInputText1" aria-describedby="textHelp" />
 						<div id="textHelp" className="form-text"></div>
 					</div>
@@ -74,19 +79,21 @@ export default function Products() {
 						</Button>
 					</div>
 				</div>
-				<div className="container">
-					<div className="row mx-0 g-4 justify-content-evenly">
-						{books.map((book) => {
-							
-							return (
-								<div className="col-lg-4 col-md-6 col-sm-12" key={book.key}>
-									<BookCard book={book} />
-								</div>
-
-							)
-						})}
-					</div>
-				</div>
+				
 			</div>
-		)
+			{loading1 ? <LoaderMini /> : <div className="container">
+				<div className="row mx-0 g-4 justify-content-evenly">
+					{books.map((book) => {
+
+						return (
+							<div className="col-lg-4 col-md-6 col-sm-12" key={book.key}>
+								<BookCard book={book} />
+							</div>
+
+						)
+					})}
+				</div>
+			</div>}
+		</div>
+	)
 }

@@ -1,12 +1,12 @@
 import React from 'react'
 
-export default function Reviews() {
+export default function Reviews({title}) {
 	return (
 		<div>
 			<div className="p-5 mb-4 bg-light rounded-3">
-				<div className="container-fluid pt-3">
+				{!title && <div className="container-fluid pt-3">
 					<h1 className="display-5 fw-bold text-info">Reviews</h1>
-				</div>
+				</div>}
 				<div id="carouselId" className="carousel slide carousel-dark" data-bs-ride="carousel">
 					
 					<div className="carousel-inner" role="listbox">
