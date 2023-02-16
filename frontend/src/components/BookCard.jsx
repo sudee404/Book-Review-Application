@@ -1,5 +1,5 @@
 import { StarIcon } from "@chakra-ui/icons"
-import { Avatar, Box, Card, CardBody, CardFooter, CardHeader, Flex, Heading, Image, Text } from "@chakra-ui/react"
+import { Avatar, Badge, Card, CardBody, CardFooter, CardHeader, Flex, Heading, Image, Text } from "@chakra-ui/react"
 import BookModal from "./BookModal"
 
 export default function BookCard({ book }) {
@@ -16,30 +16,28 @@ export default function BookCard({ book }) {
 		rating: 4,
 	}
 	return (
-		<Card maxW='md' p={2} shadow={'md'}>
+		// <Card maxW='md' p={2} shadow={'md'} className="bg-light">
 
-			<CardBody>
+		// 	<CardBody>
+		// 		<Heading size='md'>{property.title}</Heading>
+
+		// 	</CardBody>
+		// 	<Image
+		// 		objectFit='cover'
+		// 		src={property.cover}
+		// 		alt='Chakra UI'
+		// 		height={'18rem'}
+		// 		className="card-img-top rounded-3"
+		// 	/>
+
+
+		// </Card>
+		<div className="card shadow-sm h-100">
+			<img src={property.cover} className="card-img-top" style={{ height: '18rem', objectFit: 'cover' }} alt="..." />
+			<div className="card-body">
 				<Heading size='md'>{property.title}</Heading>
-
-			</CardBody>
-			<Image
-				objectFit='cover'
-				src={property.cover}
-				alt='Chakra UI'
-				height={'18rem'}
-				className="card-img-top rounded-3"
-			/>
-
-			<CardFooter
-				justify='space-between'
-				alignItems='center'
-				flexWrap='wrap'
-				sx={{
-					'& > button': {
-						minW: '136px',
-					},
-				}}
-			>
+			</div>
+			<div className="card-footer d-flex justify-content-between align-items-center">
 				<BookModal book={book} />
 				<span>
 					{Array(5)
@@ -51,7 +49,7 @@ export default function BookCard({ book }) {
 							/>
 						))}
 				</span>
-			</CardFooter>
-		</Card>
+			</div>
+		</div>
 	)
 }

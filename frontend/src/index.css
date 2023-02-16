@@ -6,6 +6,8 @@ body {
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 	scroll-behavior: smooth;
+	background: rgba(0, 0, 0, 0.877) url('https://images.unsplash.com/photo-1519680772-8b3b0b0b5f1c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80') no-repeat center center fixed;
+
 }
 
 ::-webkit-scrollbar {
@@ -44,4 +46,8 @@ code {
 
 .over:hover {
 	background: rgba(0, 0, 0, 0.877);
+}
+
+.card-bg{
+	background:-o-linear-gradient(top, #000000 0%, #000000 100%);
 }
