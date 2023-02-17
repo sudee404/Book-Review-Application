@@ -5,8 +5,9 @@ import Reviews from '../sections/Reviews'
 import ReviewModal from './ReviewModal';
 import { Button, ButtonGroup, Heading } from '@chakra-ui/react';
 import { getReviews } from '../endpoints/api';
+import AuthorDetails from './AuthorDetails'
 
-const BookDetails = ({ bookId, authorId }) => {
+const BookDetails = ({ bookId }) => {
 
 	const [book, setBook] = useState(null);
 	const [loading, setLoading] = useState(true);
@@ -18,6 +19,14 @@ const BookDetails = ({ bookId, authorId }) => {
 		setLoading(false);
 	};
 
+	const getRating = (reviews) => {	
+		let total = 0;
+		reviews.forEach(review => {
+			total += review.rating
+		});
+		setRating(total / reviews.length)
+	}
+
 	useEffect(() => {
 		fetch(`https://openlibrary.org/works/${bookId}.json`)
 			.then(response => response.json())
@@ -25,15 +34,16 @@ const BookDetails = ({ bookId, authorId }) => {
 		getReviews(bookId)
 			.then(data => {
 				setReviews(data)
+				getRating(data)
 			});
 
 	}, [bookId]);
 
 	if (!book) {
-		return <div><LoaderMini /> </div>;
+		return <div><Loader /> </div>;
 	}
 
-	const { description, covers, key, title, subjects, type, latest_revision, revision, created, last_modified } = book;
+	const { description, covers, key, authors, title, subjects, type, latest_revision, revision, created, last_modified } = book;
 
 	return (
 		<>
@@ -94,6 +104,15 @@ const BookDetails = ({ bookId, authorId }) => {
 					</div>
 				</div>
 			</div>
+			<div className="p-5 mb-4 bg-light rounded-3">
+				<Heading>About the author(s)</Heading>
+				<div className="container-fluid py-5">
+					{(authors && authors.length > 0) ? authors.map(author => (
+						<AuthorDetails authorId={author.author.key.split('/').pop() } />
+					)): 'No author mentioned'}
+				</div>
+			</div>
+
 			{(reviews && reviews.length > 0) ? <Reviews reviews={reviews} /> : (
 				<div class="p-5 mb-4 bg-light rounded-3 text-center">
 					<div class="container-fluid py-5">

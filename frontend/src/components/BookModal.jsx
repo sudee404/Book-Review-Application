@@ -46,7 +46,7 @@ export default function BookModal({ book }) {
 			<Modal isOpen={isOpen} size={'l'} onClose={onClose}>
 				{overlay}
 				<ModalContent>
-					<ModalHeader className='fw-bold fs-2 text-center'>{book.title}</ModalHeader>
+					<ModalHeader className='fw-bold fs-2 text-center'>{''}</ModalHeader>
 					<ModalBody>
 						<BookDetails bookId={bookId} />
 					</ModalBody>
