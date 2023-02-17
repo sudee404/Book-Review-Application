@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import Cookies from 'universal-cookie';
 import { login } from '../endpoints/api';
 import { useDispatch } from 'react-redux';
-import { setId,setName } from '../redux/userSlice';
+import { setId,setName, setToken } from '../redux/userSlice';
 
 
 export default function LoginForm(props) {
@@ -29,6 +29,7 @@ export default function LoginForm(props) {
 					cookies.set("token", response.data.token, { path: "/" });
 					dispatch(setId(response.data.userCred['id']))
 					dispatch(setName(response.data.userCred['username']))
+					dispatch(setToken(response.data.token))
 					props.after()
 				})
 				.catch((error) => {

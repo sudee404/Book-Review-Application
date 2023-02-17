@@ -1,11 +1,10 @@
-import { Button, Spinner } from '@chakra-ui/react';
+import { Button } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react'
 import { search } from '../endpoints/api';
-import Loader, { LoaderMini } from '../components/Loader';
-import BookModal from '../components/BookModal';
+import { LoaderMini } from '../components/Loader';
 import BookCard from '../components/BookCard';
 
-const words = ["pirates of the carribean", "lord of the rings", "buster scruggs", "dear love"];
+const words = ["pirates of the carribean", "lord of the rings", "goosebumps", "avengers", "dear love"];
 
 // Generate a random word
 const randomWord = words[Math.floor(Math.random() * words.length)];
