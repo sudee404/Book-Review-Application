@@ -57,15 +57,15 @@ export default function Reviews({ reviews }) {
 
 
 	return (
-		<>
-			<div className="p-2 mb-3">
+		<div class="p-2 p-lg-5 mb-4 bg-light rounded-3">
+			<div className=" mb-3">
 				<Heading color={'tomato'}>Reviews</Heading>
 
 			</div>
 			<div id="carouselId" className="carousel slide" data-bs-ride="carousel">
-				{reviews && reviews.length > 1 ? (
+				{reviews ? (
 					<div className="carousel-inner">
-						{reviews.map((review, idx) => (
+						{reviews.length > 1 && reviews.map((review, idx) => (
 							<div className={`carousel-item ${idx === 1 ? 'active' : ''}`} key={idx}>
 								<div className="p-2">
 									<div className="row justify-content-center align-items-center">
@@ -94,6 +94,33 @@ export default function Reviews({ reviews }) {
 								</div>
 							</div>
 						))}
+						{reviews.length === 1 && (
+								<div className="p-2">
+									<div className="row justify-content-center align-items-center">
+
+										<div className="col-12">
+											<blockquote className="text-center fs-4">{reviews[0].review}</blockquote>
+										</div>
+										<div className="col-12 text-center my-3">
+											{Array(5)
+												.fill('')
+												.map((_, i) => (
+													<StarIcon
+														key={i}
+														color={i < reviews[0].rating ? 'teal.500' : 'gray.300'}
+													/>
+												))}
+										</div>
+										<div className="col-12 text-center">
+										{new Date(reviews[0].created_at).toLocaleDateString('en-US', {
+												year: 'numeric',
+												month: 'long',
+												day: 'numeric',
+											})}
+										</div>
+									</div>
+								</div>
+						)}
 						{hasPrev && (
 							<button
 								className="carousel-control-prev"
@@ -128,6 +155,6 @@ export default function Reviews({ reviews }) {
 				)}
 
 			</div>
-		</>
+		</div>
 	);
 }
