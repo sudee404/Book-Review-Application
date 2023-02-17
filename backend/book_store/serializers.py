@@ -35,10 +35,6 @@ class BookSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class BookReviewSerializer(serializers.HyperlinkedModelSerializer):
-    user = serializers.HyperlinkedRelatedField(
-        view_name='user-detail',
-        read_only=True
-    )
 
     class Meta:
         model = BookReview

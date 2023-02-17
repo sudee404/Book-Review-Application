@@ -2,7 +2,7 @@ import React from 'react'
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { setId, setName } from "../redux/userSlice";
+import { setId, setName, setToken } from "../redux/userSlice";
 import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
 import {
@@ -25,9 +25,10 @@ import {
 export default function NavComp() {
 	const userId = useSelector((state) => state.user.id);
 	const dispatch = useDispatch();
-	const logOut = () => {
+	const logOut = (e) => {
 		dispatch(setId(""));
 		dispatch(setName(""));
+		dispatch(setToken(""));
 	};
 	const OverlayOne = () => (
 		<ModalOverlay
@@ -57,7 +58,7 @@ export default function NavComp() {
 	return (
 		<div>
 			<nav className="navbar navbar-expand-lg navbar-light sticky-top fw-bolder">
-				<div className="container-fluid p-lg-3 px-lg-5 d-flex justify-content-center-lg">
+				<div className="container-fluid p-3 px-lg-5 d-flex justify-content-center-lg">
 					<Link className="navbar-brand col" to="/">
 						ReadUp
 					</Link>
@@ -76,7 +77,7 @@ export default function NavComp() {
 						className="collapse navbar-collapse"
 						id="navbarSupportedContent"
 					>
-						<ul className="navbar-nav me-auto mb-2 mb-lg-0">
+						<ul className="navbar-nav me-auto">
 							{paths.map((item, idx) => {
 								return (
 									<li className="nav-item" key={idx}>

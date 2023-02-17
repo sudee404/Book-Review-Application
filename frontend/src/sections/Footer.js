@@ -1,13 +1,8 @@
 
 import React from 'react';
 import {
-  MDBFooter,
-  MDBContainer,
-  MDBCol,
-  MDBRow,
-  MDBBtn,
-  MDBInput
-} from 'mdb-react-ui-kit';
+  MDBFooter} from 'mdb-react-ui-kit';
+import { Link } from '@chakra-ui/react';
 
 export default function Footer() {
   return (
@@ -15,9 +10,9 @@ export default function Footer() {
 
       <div className='text-center p-3'>
         &copy; {new Date().getFullYear()} Copyright {' '}
-        <a className='text-dark' >
+        <Link className='text-dark' to="/">
           ReadUp.com
-        </a>
+        </Link>
       </div>
     </MDBFooter>
   );

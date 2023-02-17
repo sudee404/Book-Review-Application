@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { register } from '../endpoints/api';
 import Cookies from 'universal-cookie';
 import { useDispatch } from 'react-redux';
-import { setId,setName } from '../redux/userSlice';
+import { setId,setName, setToken } from '../redux/userSlice';
 
 const RegisterForm = (props) => {
 	const [formData, setFormData] = useState({});
@@ -27,6 +27,7 @@ const RegisterForm = (props) => {
 					cookies.set("token", response.data.token, { path: "/" });
 					dispatch(setId(response.data.userCred['id']))
 					dispatch(setName(response.data.userCred['username']))
+					dispatch(setToken(response.data.token))
 					props.after()
 
 				})

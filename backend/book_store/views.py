@@ -1,13 +1,16 @@
-from django.http import JsonResponse
+import json
+
+import requests
 from .serializers import AuthorSerializer, BookReviewSerializer, BookSerializer
 from django.contrib.auth import authenticate, logout, get_user_model
+from rest_framework import viewsets
 from rest_framework import status, views, viewsets
 from .serializers import LoginSerializer, UserSerializer
 from .models import Author, Book, BookReview
 from rest_framework.response import Response
 from django.conf import settings
 from jwt import encode as jwt_encode
-import requests
+import jwt
 import datetime
 
 User = get_user_model()
@@ -84,7 +87,7 @@ class RegisterView(views.APIView):
 
 class BookViewSet(viewsets.ModelViewSet):
     """This is the viewset that handles all actions at /projects endpoint"""
-    queryset = Book.objects.all().order_by('title')
+    queryset = Book.objects.all()
     serializer_class = BookSerializer
     permission_classes = []
 
@@ -93,13 +96,62 @@ class BookReviewViewSet(viewsets.ModelViewSet):
     """This is the viewset that handles all actions at /projects endpoint"""
     queryset = BookReview.objects.all().order_by('created_at')
     serializer_class = BookReviewSerializer
-    permission_classes = []
+    authentication_classes = ()
+    permission_classes = ()
+
+    def list(self, request, *args, **kwargs):
+        queryset = super().get_queryset()
+        # Get book id to filter reviews
+        book_id = request.query_params.get('book', None)
+        if book_id is not None:
+            queryset = queryset.filter(book_id=book_id)
+
+        serializer = self.serializer_class(
+            queryset, many=True, context={'request': request})
+        return Response(serializer.data)
+
+    def create(self, request, *args, **kwargs):
+        # Get the token from the Authorization header
+
+        try:
+            token = request.META.get('HTTP_AUTHORIZATION', '').split(' ')[1]
+
+            # Decode the token
+            payload = jwt.decode(
+                token, settings.JWT_SECRET_KEY, settings.JWT_ALGORITHM)
+
+            # Set the user to the current authenticated user
+            user = User.objects.get(username=payload['username'])
+            # Create or get book
+            book = Book.objects.get_or_create(
+                identifier=f"{request.data['key']}")[0]
+            # Create review
+            review = BookReview.objects.create(
+                book=book, user=user, review=request.data['review'], rating=request.data['rating'])
+
+            return Response({'message': 'review added successfully'}, status=status.HTTP_201_CREATED)
+
+        except jwt.ExpiredSignatureError:
+            return Response({'error': 'Token expired'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        except jwt.InvalidSignatureError:
+            return Response({'error': 'Invalid token signature'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        except jwt.DecodeError:
+            return Response({'error': 'Invalid token'}, status=status.HTTP_401_UNAUTHORIZED)
+        except IndexError:
+            return Response({'error': 'No token found, Kindly log in'}, status=status.HTTP_307_TEMPORARY_REDIRECT)
 
 
 class AuthorViewSet(viewsets.ModelViewSet):
     """This is the viewset that handles all actions at /projects endpoint"""
-    queryset = Author.objects.all().order_by('name')
+    queryset = Author.objects.all()
     serializer_class = AuthorSerializer
     permission_classes = []
 
 
+class UserViewSet(viewsets.ModelViewSet):
+    """This is the viewset that handles all actions at /projects endpoint"""
+    queryset = get_user_model().objects.all()
+    serializer_class = UserSerializer
+    permission_classes = []
