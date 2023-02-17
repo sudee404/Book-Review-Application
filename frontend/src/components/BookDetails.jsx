@@ -1,9 +1,9 @@
 import { StarIcon } from '@chakra-ui/icons';
 import React, { useState, useEffect } from 'react';
-import Loader, { LoaderMini, LoaderOne } from './Loader';
+import Loader from './Loader';
 import Reviews from '../sections/Reviews'
 import ReviewModal from './ReviewModal';
-import { Button, ButtonGroup, Heading } from '@chakra-ui/react';
+import { Button, Heading } from '@chakra-ui/react';
 import { getReviews } from '../endpoints/api';
 import AuthorDetails from './AuthorDetails'
 
@@ -19,7 +19,7 @@ const BookDetails = ({ bookId }) => {
 		setLoading(false);
 	};
 
-	const getRating = (reviews) => {	
+	const getRating = (reviews) => {
 		let total = 0;
 		reviews.forEach(review => {
 			total += review.rating
@@ -43,7 +43,7 @@ const BookDetails = ({ bookId }) => {
 		return <div><Loader /> </div>;
 	}
 
-	const { description, covers, key, authors, title, subjects, type, latest_revision, revision, created, last_modified } = book;
+	const { description, covers, authors, title, subjects, revision } = book;
 
 	return (
 		<>
@@ -61,15 +61,15 @@ const BookDetails = ({ bookId }) => {
 							loading={loading ? "eager" : "lazy"}
 						/>
 
-						<div class="row text-center align-items-center g-2 mx-0 p-3">
-							<div class="col-12">
+						<div className="row text-center align-items-center g-2 mx-0 p-3">
+							<div className="col-12">
 								<Button
 									bg={'bisque'}
 								>
 									Add to List
 								</Button>
 							</div>
-							<div class="col-12">
+							<div className="col-12">
 								<ReviewModal bookId={bookId} />
 							</div>
 						</div>
@@ -108,16 +108,16 @@ const BookDetails = ({ bookId }) => {
 				<Heading>About the author(s)</Heading>
 				<div className="container-fluid py-5">
 					{(authors && authors.length > 0) ? authors.map(author => (
-						<AuthorDetails authorId={author.author.key.split('/').pop() } />
-					)): 'No author mentioned'}
+						<AuthorDetails authorId={author.author.key.split('/').pop()} />
+					)) : 'No author mentioned'}
 				</div>
 			</div>
 
 			{(reviews && reviews.length > 0) ? <Reviews reviews={reviews} /> : (
-				<div class="p-5 mb-4 bg-light rounded-3 text-center">
-					<div class="container-fluid py-5">
-						<h1 class="display-5 fw-bold">No reviews </h1>
-						<p class="col-md-8 mx-auto my-2 fs-4">Be the first to add a review below</p>
+				<div className="p-5 mb-4 bg-light rounded-3 text-center">
+					<div className="container-fluid py-5">
+						<h1 className="display-5 fw-bold">No reviews </h1>
+						<p className="col-md-8 mx-auto my-2 fs-4">Be the first to add a review below</p>
 						<ReviewModal bookId={bookId} />
 					</div>
 				</div>
