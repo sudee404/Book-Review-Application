@@ -9,7 +9,7 @@ User = get_user_model()
 class Book(models.Model):
     """Model definition for Book."""
 
-    identifier = models.CharField(primary_key=True,max_length=200)
+    identifier = models.CharField(primary_key=True, max_length=200)
 
     class Meta:
         """Meta definition for Book."""
@@ -53,8 +53,28 @@ class BookReview(models.Model):
 
         verbose_name = 'Book Review'
         verbose_name_plural = 'Book Reviews'
-        
 
     def __str__(self):
         """Unicode representation of BookReview."""
         self.review
+
+
+class BookClub(models.Model):
+    """Model definition for BookClub."""
+
+    name = models.CharField(max_length=250)
+    description = models.TextField()
+    members = models.ManyToManyField(User, related_name='book_clubs')
+    books = models.ManyToManyField(Book, related_name='book_clubs')
+    created_at = models.DateTimeField(auto_now_add=True)
+    poster = models.ImageField(upload_to='poster/', null=True)
+
+    class Meta:
+        """Meta definition for BookClub."""
+
+        verbose_name = 'Book Club'
+        verbose_name_plural = 'Book Clubs'
+
+    def __str__(self):
+        """Unicode representation of BookClub."""
+        self.name

@@ -87,7 +87,9 @@ const BookDetails = ({ bookId }) => {
 						</Heading>
 					</div>
 					<div className="p-3 m-2 bg-light rounded-3">
-						<div className="lead fs-4">{description ? description.value : 'No description provided'}</div>
+						<div className="lead fs-4">
+							{typeof description === 'object' ? description.value || 'No description provided' : description || 'No description provided'}
+						</div>
 					</div>
 					<div className="p-3 m-2 bg-light rounded-3">
 						<p>Revisions: {revision}</p>

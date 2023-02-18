@@ -1,12 +1,9 @@
-import json
-
-import requests
-from .serializers import AuthorSerializer, BookReviewSerializer, BookSerializer
+from .serializers import AuthorSerializer, BookReviewSerializer, BookSerializer,BookClubSerializer
 from django.contrib.auth import authenticate, logout, get_user_model
 from rest_framework import viewsets
 from rest_framework import status, views, viewsets
 from .serializers import LoginSerializer, UserSerializer
-from .models import Author, Book, BookReview
+from .models import Author, Book, BookReview,BookClub
 from rest_framework.response import Response
 from django.conf import settings
 from jwt import encode as jwt_encode
@@ -154,4 +151,11 @@ class UserViewSet(viewsets.ModelViewSet):
     """This is the viewset that handles all actions at /projects endpoint"""
     queryset = get_user_model().objects.all()
     serializer_class = UserSerializer
+    permission_classes = []
+
+
+class BookClubViewSet(viewsets.ModelViewSet):
+    """This is the viewset that handles all actions at /projects endpoint"""
+    queryset = BookClub.objects.all()
+    serializer_class = BookClubSerializer
     permission_classes = []

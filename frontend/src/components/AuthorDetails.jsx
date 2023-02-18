@@ -23,7 +23,7 @@ const AuthorDetails = ({ authorId }) => {
 					<p className="card-text text-success">Name:</p>
 					<h5 className="card-title fw-bold">{author.name || 'Not Specified'}</h5>
 					<p className="card-text text-primary">Bio:</p>
-					<p className="card-text">{author.bio || 'Not Specified'}</p>
+					<p className="card-text">{typeof author.bio === 'object' ? author.bio.value || 'Not Specified' : author.bio || 'Not Specified'}</p>
 					<p className="card-text text-info">Date of Birth:</p>
 					<p className="card-text">
 						<small className="text-muted">

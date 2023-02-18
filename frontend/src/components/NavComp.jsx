@@ -1,6 +1,6 @@
 import React from 'react'
 import { ChevronDownIcon } from "@chakra-ui/icons";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setId, setName, setToken } from "../redux/userSlice";
 import LoginForm from "./LoginForm";
@@ -25,6 +25,8 @@ import {
 export default function NavComp() {
 	const userId = useSelector((state) => state.user.id);
 	const dispatch = useDispatch();
+	const { pathname } = useLocation();
+
 	const logOut = (e) => {
 		dispatch(setId(""));
 		dispatch(setName(""));
@@ -82,7 +84,7 @@ export default function NavComp() {
 								return (
 									<li className="nav-item" key={idx}>
 										<Link
-											className="nav-link mx-2"
+											className={`nav-link mx-2 ${item[1] === pathname ? 'active' : ''}`}
 											aria-current="page"
 											to={item[1]}
 										>
@@ -94,7 +96,7 @@ export default function NavComp() {
 							{!userId ? (
 								<><li className="nav-item">
 									<Link
-										className="nav-link mx-2"
+										className={`nav-link mx-2`}
 										aria-current="page"
 										to="#login"
 										onClick={() => {
@@ -127,10 +129,10 @@ export default function NavComp() {
 									</li></>
 							) : <li className="nav-item">
 								<Link
-									className="nav-link mx-2"
+										className={`nav-link mx-2 ${"my-books/" === pathname ? 'active' : ''}`}
 									aria-current="page"
 									to="my-books/"
-									
+
 								>
 									My Books
 								</Link>

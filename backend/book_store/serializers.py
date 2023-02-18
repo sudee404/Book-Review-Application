@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Book, BookReview, Author
+from .models import Book, BookReview, Author,BookClub
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
@@ -44,4 +44,10 @@ class BookReviewSerializer(serializers.HyperlinkedModelSerializer):
 class AuthorSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Author
+        fields = ('__all__')
+
+
+class BookClubSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = BookClub
         fields = ('__all__')

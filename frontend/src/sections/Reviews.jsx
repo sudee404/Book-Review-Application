@@ -57,7 +57,7 @@ export default function Reviews({ reviews }) {
 
 
 	return (
-		<div class="p-2 p-lg-5 mb-4 bg-light rounded-3">
+		<div className="p-2 p-lg-5 mb-4 bg-light rounded-3">
 			<div className=" mb-3">
 				<Heading color={'tomato'}>Reviews</Heading>
 
@@ -95,31 +95,31 @@ export default function Reviews({ reviews }) {
 							</div>
 						))}
 						{reviews.length === 1 && (
-								<div className="p-2">
-									<div className="row justify-content-center align-items-center">
+							<div className="p-2">
+								<div className="row justify-content-center align-items-center">
 
-										<div className="col-12">
-											<blockquote className="text-center fs-4">{reviews[0].review}</blockquote>
-										</div>
-										<div className="col-12 text-center my-3">
-											{Array(5)
-												.fill('')
-												.map((_, i) => (
-													<StarIcon
-														key={i}
-														color={i < reviews[0].rating ? 'teal.500' : 'gray.300'}
-													/>
-												))}
-										</div>
-										<div className="col-12 text-center">
+									<div className="col-12">
+										<blockquote className="text-center fs-4">{reviews[0].review}</blockquote>
+									</div>
+									<div className="col-12 text-center my-3">
+										{Array(5)
+											.fill('')
+											.map((_, i) => (
+												<StarIcon
+													key={i}
+													color={i < reviews[0].rating ? 'teal.500' : 'gray.300'}
+												/>
+											))}
+									</div>
+									<div className="col-12 text-center">
 										{new Date(reviews[0].created_at).toLocaleDateString('en-US', {
-												year: 'numeric',
-												month: 'long',
-												day: 'numeric',
-											})}
-										</div>
+											year: 'numeric',
+											month: 'long',
+											day: 'numeric',
+										})}
 									</div>
 								</div>
+							</div>
 						)}
 						{hasPrev && (
 							<button

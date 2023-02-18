@@ -10,9 +10,9 @@ import Products from "./sections/Products";
 import About from "./sections/About";
 import BackToTopButton from "./components/BackToTopButton";
 import Services from "./sections/Services";
-import Reviews from "./sections/Reviews";
 import NavComp from "./components/NavComp";
 import MyBooks from "./sections/MyBooks";
+import BookClubs from "./sections/BookClubs";
 
 const router = createBrowserRouter([
 	{
@@ -59,7 +59,7 @@ const router = createBrowserRouter([
 				path: "clubs/",
 				element: (
 					<div>
-						<Products />
+						<BookClubs/>
 						<Footer />
 						<BackToTopButton />
 					</div>

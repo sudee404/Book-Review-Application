@@ -6,7 +6,7 @@ import { Link } from '@chakra-ui/react';
 
 export default function Footer() {
   return (
-    <MDBFooter backgroundcolor='light' className='text-center text-lg-left'>
+    <MDBFooter backgroundcolor='light' className='text-center text-lg-left mt-4'>
 
       <div className='text-center p-3'>
         &copy; {new Date().getFullYear()} Copyright {' '}

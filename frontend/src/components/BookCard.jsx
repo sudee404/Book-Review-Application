@@ -1,8 +1,17 @@
-import { StarIcon } from "@chakra-ui/icons"
 import { Heading } from "@chakra-ui/react"
+import { useState } from "react";
 import BookModal from "./BookModal"
 
 export default function BookCard({ book }) {
+
+	const [loading, setLoading] = useState(true);
+	const [shadow, setShadow] = useState('md');
+
+	const handleImageLoad = (e) => {
+		e.preventDefault()
+		setLoading(false);
+	};
+
 	const property = {
 		title: book.title,
 		author:
@@ -11,25 +20,28 @@ export default function BookCard({ book }) {
 		rating: 4,
 	}
 	return (
-		
-		<div className="card shadow-sm h-100">
-			<img src={property.cover} className="card-img-top" style={{ height: '18rem', objectFit: 'cover' }} alt="..." />
+
+		<div className={`card ${shadow} m-2`}
+			onMouseOver={() => {
+				setShadow('shadow-lg');
+			}}
+			onMouseOut={() => {
+				setShadow('shadow-sm');
+			}}
+		>
+			<img src={property.cover}
+				className="card-img-top"
+				alt="..."
+				style={{ height: '18rem', objectFit: 'cover', display: loading ? "none" : "block" }}
+				onLoad={handleImageLoad}
+				loading={loading ? "eager" : "lazy"} />
 			<div className="card-body row justify-content-center align-items-center">
 				<div className="col-12"><Heading size='md'>{property.title}</Heading></div>
-				<div className="lead col-12">{property.author }</div>
+				<div className="lead col-12">{property.author}</div>
 			</div>
 			<div className="card-footer d-flex justify-content-center align-items-center">
 				<BookModal book={book} />
-				{/* <span>
-					{Array(5)
-						.fill('')
-						.map((_, i) => (
-							<StarIcon
-								key={i}
-								color={i < property.rating ? 'teal.500' : 'gray.300'}
-							/>
-						))}
-				</span> */}
+
 			</div>
 		</div>
 	)

@@ -14,11 +14,28 @@ export const register = (formData) => {
 	return axios.post(`${BASE_URL}register/`, formData);
 };
 
-export const search = (query, page = 1) => {
-	return axios.get(
-		`https://openlibrary.org/search.json?q=${query}&page=${page}`
+// export const search = (query, page = 1) => {
+// 	return axios.get(
+// 		`https://openlibrary.org/search.json?q=${query}&page=${page}`
+// 	);
+// };
+export const search = async (query, perPage, page) => {
+	const startIndex = (page - 1) * perPage;
+	const endIndex = startIndex + perPage;
+	const response = await axios.get(
+		`https://openlibrary.org/search.json?q=${query}&limit=${perPage}&offset=${startIndex}`
 	);
+	const books = response.data.docs;
+	const totalResults = response.data.numFound;
+	const totalPages = Math.ceil(totalResults / perPage);
+	return {
+		books: books.slice(0, perPage),
+		totalResults,
+		totalPages,
+	};
 };
+
+
 
 export const getBook = (key) => {
 	return axios.get(`https://openlibrary.org/works/${key}.json`);

@@ -4,33 +4,32 @@ import { search } from '../endpoints/api';
 import { LoaderMini } from '../components/Loader';
 import BookCard from '../components/BookCard';
 
-const words = ["pirates of the carribean", "lord of the rings", "goosebumps", "avengers", "dear love"];
+const words = ["pirates of the carribean", "avengers", "dear love"];
 
 // Generate a random word
 const randomWord = words[Math.floor(Math.random() * words.length)];
 
 
 export default function Products() {
-	const [query, setQuery] = useState('')
+	const [query, setQuery] = useState(randomWord)
+	const [queryText, setQueryText] = useState()
 	const [loading, setLoading] = useState(false)
 	const [books, setBooks] = useState([])
 	const [loading1, setLoading1] = useState(true);
+	const [page, setPage] = useState(1)
+	const [totalResults, setTotalResults] = useState(0);
+	const [totalPages, setTotalPages] = useState(0);
+	const [perPage, setPerPage] = useState(9);
 	const handlechange = (e) => {
-		setQuery(e.target.value);
+		setQueryText(e.target.value);
 	}
 
 	const handleSearch = (e) => {
 		setLoading(true);
+
 		if (query) {
-			search(query)
-				.then((response) => {
-					setBooks(response.data.docs);
-					setLoading(false);
-				})
-				.catch((error) => {
-					console.log(error);
-					setLoading(false);
-				});
+			setQuery(queryText);
+			setPage(1)
 		} else {
 			alert('Please enter a search query');
 			setLoading(false);
@@ -38,21 +37,29 @@ export default function Products() {
 	};
 
 	useEffect(() => {
-		search(randomWord)
+		setLoading1(true);
+		search((query), perPage, page)
 			.then((response) => {
-				setBooks(response.data.docs);
+				setBooks(response.books);
+				setTotalResults(response.totalResults);
+				setTotalPages(response.totalPages);
 				setLoading1(false);
+				setLoading(false);
+
 			})
 			.catch((error) => {
 				console.log(error);
 				setLoading1(false);
+				setLoading(false);
+
 			});
-	}, []);
+
+	}, [query, perPage, page]);
 
 
 	return (
 		<div>
-			
+
 
 			<div className="row justify-content-center mx-0 pt-4">
 				<div className="p-5 mb-4 bg-light rounded-3">
@@ -62,10 +69,10 @@ export default function Products() {
 
 					</div>
 					<div className="mb-3 col-6 mx-auto">
-						<input type="text" onChange={handlechange} value={query} className="form-control" placeholder='whale rider' id="exampleInputText1" aria-describedby="textHelp" />
+						<input type="text" onChange={handlechange} value={queryText} className="form-control" placeholder='Search book title' id="exampleInputText1" aria-describedby="textHelp" />
 						<div id="textHelp" className="form-text"></div>
 					</div>
-					<div className='mb-4'>
+					<div >
 						<Button
 							isLoading={loading}
 							loadingText='searching'
@@ -76,23 +83,90 @@ export default function Products() {
 						>
 							Search
 						</Button>
+
 					</div>
+
 				</div>
-				
+
 			</div>
-			{loading1 ? <LoaderMini /> : <div className="container">
-				<div className="row mx-0 g-4 justify-content-evenly">
-					{books.map((book) => {
+			{loading1 ? <LoaderMini /> :
+				<div className="container">
+					<div className="p-5 mb-4 bg-light rounded-3">
+						<div className="container-fluid">
+							<h3 className="display-5 fw-bold"><span className="text-success">{totalResults} </span> Results found for <span className="text-info">"{query}"</span></h3>
+						</div>
+					</div>
+					<div className="row mx-0 g-4 justify-content-evenly">
+						{books.map((book) => {
 
-						return (
-							<div className="col-lg-4 col-md-6 col-sm-12" key={book.key}>
-								<BookCard book={book} />
-							</div>
+							return (
+								<div className="col-lg-4 col-md-6 col-sm-12" key={book.key}>
+									<BookCard book={book} />
+								</div>
 
-						)
-					})}
+							)
+						})}
+
+					</div>
+				</div>}
+			{totalResults >= 9 && (
+				<div className="col-12 p-lg-5 py-4">
+					<nav aria-label="Page navigation example">
+						<ul className="pagination justify-content-center">
+							<li className={`page-item ${page === 1 ? "disabled" : ""}`}>
+								<button
+									className="page-link"
+									disabled={page === 1}
+									onClick={() => setPage(page - 1)}
+								>
+									Previous
+								</button>
+							</li>
+
+							{[...Array(totalPages)].map((_, index) => {
+								if (
+									index + 1 === page ||
+									(index + 1 >= page - 2 && index + 1 <= page + 2) ||
+									index + 1 === totalPages
+								) {
+									return (
+										<li
+											key={index}
+											className={`page-item ${index + 1 === page ? "active" : ""}`}
+										>
+											<button className="page-link" onClick={() => setPage(index + 1)}>
+												{index + 1}
+											</button>
+										</li>
+									);
+								}
+								if (
+									index + 1 === page - 3 ||
+									index + 1 === page + 3 ||
+									index + 1 === 1
+								) {
+									return (
+										<li key={index} className="page-item disabled">
+											<span className="page-link">...</span>
+										</li>
+									);
+								}
+								return null;
+							})}
+							<li className={`page-item ${page === totalPages ? "disabled" : ""}`}>
+								<button
+									className="page-link"
+									disabled={page === totalPages}
+									onClick={() => setPage(page + 1)}
+								>
+									Next
+								</button>
+							</li>
+						</ul>
+					</nav>
+
 				</div>
-			</div>}
+			)}
 		</div>
 	)
 }
