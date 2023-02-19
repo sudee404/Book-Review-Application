@@ -1,9 +1,10 @@
-from .serializers import AuthorSerializer, BookReviewSerializer, BookSerializer,BookClubSerializer
+from .serializers import AuthorSerializer, BookReviewSerializer, BookSerializer, BookClubSerializer
 from django.contrib.auth import authenticate, logout, get_user_model
-from rest_framework import viewsets
 from rest_framework import status, views, viewsets
+from rest_framework.parsers import MultiPartParser
+from rest_framework.permissions import IsAuthenticated
 from .serializers import LoginSerializer, UserSerializer
-from .models import Author, Book, BookReview,BookClub
+from .models import Author, Book, BookReview, BookClub
 from rest_framework.response import Response
 from django.conf import settings
 from jwt import encode as jwt_encode
@@ -159,3 +160,50 @@ class BookClubViewSet(viewsets.ModelViewSet):
     queryset = BookClub.objects.all()
     serializer_class = BookClubSerializer
     permission_classes = []
+    parser_classes = [MultiPartParser]
+
+    # def list(self, request, *args, **kwargs):
+    #     queryset = super().get_queryset()
+    #     # Get book id to filter reviews
+    #     book_id = request.query_params.get('book', None)
+    #     if book_id is not None:
+    #         queryset = queryset.filter(book_id=book_id)
+
+    #     serializer = self.serializer_class(
+    #         queryset, many=True, context={'request': request})
+    #     return Response(serializer.data)
+
+    def create(self, request, *args, **kwargs):
+        # Get the token from the Authorization header
+
+        try:
+            token = request.META.get('HTTP_AUTHORIZATION', '').split(' ')[1]
+
+            # Decode the token
+            payload = jwt.decode(
+                token, settings.JWT_SECRET_KEY, settings.JWT_ALGORITHM)
+
+            # Set the user to the current authenticated user
+            user = User.objects.get(username=payload['username'])
+            # Create Club
+            name = request.data.get('name')
+            description = request.data.get('description')
+            poster = request.FILES.get('poster')
+
+            # Create a new BookClub object with the given fields
+            club = BookClub(name=name, description=description,
+                            poster=poster, owner=user)
+            club.save()
+
+            return Response({'message': 'club added successfully'}, status=status.HTTP_201_CREATED)
+
+        except jwt.ExpiredSignatureError:
+            return Response({'error': 'Token expired'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        except jwt.InvalidSignatureError:
+            return Response({'error': 'Invalid token signature'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        except jwt.DecodeError:
+            return Response({'error': 'Invalid token'}, status=status.HTTP_401_UNAUTHORIZED)
+        except IndexError:
+            return Response({'error': 'No token found, Kindly log in'}, status=status.HTTP_307_TEMPORARY_REDIRECT)

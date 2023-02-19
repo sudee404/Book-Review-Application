@@ -1,6 +1,9 @@
 import React, { useState } from "react";
-import { Input, Flex, Box, Image, Heading, Text, Button } from "@chakra-ui/react";
+import { Input, Box, Text } from "@chakra-ui/react";
 import ClubCard from "../components/ClubCard";
+import ClubForm from "../components/ClubForm";
+import { getClubs } from "../endpoints/api";
+import { useEffect } from "react";
 
 const BookClubs = () => {
 	const bookClubs = [
@@ -50,8 +53,18 @@ const BookClubs = () => {
 	];
 
 	const [search, setSearch] = useState("");
+	const [clubs, setClubs] = useState([])
 
-	const filteredBookClubs = bookClubs.filter((bookClub) => {
+	useEffect(() => {
+		getClubs()
+			.then(data => {
+				console.log(data.results)
+				setClubs(data.results)
+			})
+			.catch(errors => console.log(errors))
+	}, [])
+
+	const filteredBookClubs = clubs.filter((bookClub) => {
 		return bookClub.name.toLowerCase().includes(search.toLowerCase());
 	});
 
@@ -63,29 +76,33 @@ const BookClubs = () => {
 					<p className="col-md-8 mx-auto fs-4 py-4">
 						Join a community of book lovers and connect with fellow readers around the world. Explore book clubs based on your interests and discover new literary treasures together.
 					</p>
-					<Box mb={6} w="80%" mx={'auto'}>
-						<Input
-							placeholder="Search book clubs"
-							value={search}
-							onChange={(event) => setSearch(event.target.value)}
-						/>
-					</Box>
+					<ClubForm />
 
 				</div>
 			</div>
 
-			<div className="row row-cols-sm-1 row-cols-lg-2 justify-content-center align-items-center g-4 mx-0">
+			<div className="p-lg-5 p-2 mb-4">
+				<Box mb={6} w="80%" mx={'auto'}>
+					<Input
+						placeholder="Search book clubs"
+						value={search}
+						onChange={(event) => setSearch(event.target.value)}
+					/>
+				</Box>
+				<div className="row row-cols-sm-1 row-cols-lg-2 justify-content-center align-items-center g-4 mx-0">
 
-				{filteredBookClubs.length > 0 ? (
-					filteredBookClubs.map((bookClub, idx) => (
-						<ClubCard club={bookClub} key={idx} />
-					))
-				) : (
-					<Box>
-						<Text>No book clubs found.</Text>
-					</Box>
-				)}
+					{filteredBookClubs.length > 0 ? (
+						filteredBookClubs.map((bookClub, idx) => (
+							<ClubCard club={bookClub} key={idx} />
+						))
+					) : (
+						<Box>
+							<Text>No book clubs found.</Text>
+						</Box>
+					)}
+				</div>
 			</div>
+
 
 		</>
 	);
