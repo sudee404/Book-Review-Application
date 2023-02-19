@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
 	Modal,
 	ModalOverlay,
@@ -8,8 +8,11 @@ import {
 	ModalBody,
 	Button,
 	useDisclosure,
-	Avatar
+	Avatar,
+	useToast
 } from '@chakra-ui/react'
+import { useSelector } from 'react-redux'
+import { joinClub } from '../endpoints/api'
 
 export default function ClubModal({ club }) {
 
@@ -23,6 +26,36 @@ export default function ClubModal({ club }) {
 	)
 	const { isOpen, onOpen, onClose } = useDisclosure()
 	const [overlay, setOverlay] = React.useState(<Overlay />)
+	const token = useSelector((state) => state.user.token);
+	const [joining, setJoining] = useState(false)
+	const toast = useToast();
+
+	const showToast = (status, message) => {
+		return toast({
+			title: status,
+			description: message || 'Club created successfully',
+			status: status || 'success',
+			duration: 3000,
+			isClosable: true,
+		})
+	}
+	const handleJoin = event => {
+		event.preventDefault();
+		setJoining(true)
+		const data = { 'club_id':club.id }
+		const config = {
+			headers: { Authorization: `Bearer ${token}` },
+		};
+		joinClub(data, config)
+			.then(res => {
+				setJoining(false)
+				showToast('success', 'Joined club successfully')
+			})
+			.catch(err => {
+				setJoining(false)
+				showToast('error', 'Failed to join club')
+			})
+	}
 
 
 	if (!isOpen) {
@@ -58,7 +91,7 @@ export default function ClubModal({ club }) {
 								<div className="p-2 mb-4 bg-light rounded-3">
 									<div className="container-fluid py-5">
 										<h1 className="display-5 fw-bold">{club.name}</h1>
-										<small className="text-info">Description:</small>
+										<small className="text-info">Description:{ club.url}</small>
 										<p className="col-md-8 fs-4">{club.description}</p>
 										<small className="text-success">Members:</small>
 										<p className="col-md-8 fs-4">{club.members.length} members</p>
@@ -78,7 +111,7 @@ export default function ClubModal({ club }) {
 											</div>
 										</div>
 										<div className="d-flex justify-content-center align-items-center">
-											<Button colorScheme={'whatsapp'} mt={'3'}>
+											<Button colorScheme={'whatsapp'} mt={'3'} onClick={handleJoin} isLoading={joining} loadingText='Joining'>
 												Join Club
 											</Button>
 										</div>

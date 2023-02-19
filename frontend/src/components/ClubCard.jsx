@@ -3,7 +3,6 @@ import React, { useState } from 'react'
 import ClubModal from './ClubModal';
 
 export default function ClubCard({ club }) {
-	const [shadow, setShadow] = useState('md');
 	const [activeTab, setActiveTab] = useState('1');
 
 	const handleTabClick = (e) => {
@@ -36,16 +35,7 @@ export default function ClubCard({ club }) {
 								Description
 							</a>
 						</li>
-						<li className="nav-item">
-							<a
-								className={`nav-link ${activeTab === '3' ? 'active' : ''}`}
-								href="#"
-								data-tab="3"
-								onClick={handleTabClick}
-							>
-								Join
-							</a>
-						</li>
+						
 					</ul>
 				</div>
 				<div className="card-body p-2 p-lg-5">
@@ -54,6 +44,7 @@ export default function ClubCard({ club }) {
 							<Heading color={'rosybrown'}>
 								{club.name}
 							</Heading>
+							<ClubModal club={club} />
 						</>
 					)}
 					{activeTab === '2' && (
@@ -62,11 +53,7 @@ export default function ClubCard({ club }) {
 								content.</div>
 						</>
 					)}
-					{activeTab === '3' && (
-						<>
-							<ClubModal club={club}/>
-						</>
-					)}
+					
 				</div>
 			</Card>
 		</div>

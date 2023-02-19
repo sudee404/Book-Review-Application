@@ -51,6 +51,10 @@ export const submitReview = (data, config) => {
 	return axios.post(`${BASE_URL}reviews/`, data, config);
 };
 
+export const joinClub = (data, config) => {
+	return axios.post(`${BASE_URL}join_club/`, data, config);
+};
+
 export const getReviews = async (bookId) => {
 	const response = await fetch(`${BASE_URL}reviews/?book=${bookId}`);
 	return response.json();
