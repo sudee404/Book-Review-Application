@@ -89,7 +89,7 @@ DATABASES = {
         'NAME': 'book-review',
         'USER': 'admin',
         'PASSWORD': '12345',
-        'HOST': 'localhost', #'db'
+        'HOST': 'db', #'db'
         'PORT': 5432,
     }
 }
@@ -147,4 +147,4 @@ REST_FRAMEWORK = {
 # JWT settings
 JWT_SECRET_KEY = os.getenv('SECRET_KEY')
 JWT_ALGORITHM = 'HS256'
-JWT_EXPIRATION_DELTA = datetime.timedelta(hours=24)
+JWT_EXPIRATION_DELTA = datetime.timedelta(days=7)

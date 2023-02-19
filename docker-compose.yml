@@ -14,8 +14,6 @@ services:
       - .:/app
     depends_on:
       - db
-    links:
-      - db:postgres:13.1-alpine
   db:
     image: postgres:13.1-alpine
     environment:
