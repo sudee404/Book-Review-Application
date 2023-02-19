@@ -1,13 +1,11 @@
 import { StarIcon } from '@chakra-ui/icons'
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { Carousel } from 'bootstrap';
 import { Heading } from '@chakra-ui/react';
 
 
 
 export default function Reviews({ reviews }) {
-	const [hasPrev, setHasPrev] = useState(false);
-	const [hasNext, setHasNext] = useState(false);
 
 	useEffect(() => {
 		if (reviews && reviews.length > 0) {
@@ -18,40 +16,7 @@ export default function Reviews({ reviews }) {
 			const carousel = new Carousel(carouselElement, {
 				interval: 3000,
 			});
-
-
-			// Add event listener to the carousel slide event
-			const handleSlide = () => {
-				// Check if there is a previous slide
-				if (carouselElement.querySelector('.carousel-item-prev')) {
-					setHasPrev(true);
-				} else {
-					setHasPrev(false);
-				}
-
-				// Check if there is a next slide
-				if (carouselElement.querySelector('.carousel-item-next')) {
-					setHasNext(true);
-				} else {
-					setHasNext(false);
-				}
-			};
-
-			carouselElement.addEventListener('slid.bs.carousel', handleSlide);
-
-			// Check the initial state
-			if (carouselElement.querySelector('.carousel-item-prev')) {
-				setHasPrev(true);
-			}
-
-			if (carouselElement.querySelector('.carousel-item-next')) {
-				setHasNext(true);
-			}
-
-			// Clean up the event listener
-			return () => {
-				carouselElement.removeEventListener('slid.bs.carousel', handleSlide);
-			};
+			carousel.next();
 		}
 	}, [reviews]);
 
@@ -121,7 +86,7 @@ export default function Reviews({ reviews }) {
 								</div>
 							</div>
 						)}
-						{hasPrev && (
+						
 							<button
 								className="carousel-control-prev"
 								type="button"
@@ -134,8 +99,7 @@ export default function Reviews({ reviews }) {
 								/>
 								<span className="visually-hidden">Previous</span>
 							</button>
-						)}
-						{hasNext && (
+						
 							<button
 								className="carousel-control-next"
 								type="button"
@@ -145,7 +109,7 @@ export default function Reviews({ reviews }) {
 								<span className="carousel-control-next-icon" aria-hidden="true" />
 								<span className="visually-hidden">Next</span>
 							</button>
-						)}
+					
 					</div>
 				) : (
 					<div className="container-fluid pt-3 text-center">

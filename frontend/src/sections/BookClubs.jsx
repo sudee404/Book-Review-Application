@@ -6,52 +6,7 @@ import { getClubs } from "../endpoints/api";
 import { useEffect } from "react";
 
 const BookClubs = () => {
-	const bookClubs = [
-		{
-			id: 1,
-			name: "The Classics Club",
-			description: "We read and discuss classic literature from around the world.",
-			image: 'https://images.unsplash.com/photo-1667489022797-ab608913feeb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw5fHx8ZW58MHx8fHw%3D&auto=format&fit=crop&w=800&q=60',
-			members: 25
-		},
-		{
-			id: 2,
-			name: "Science Fiction Society",
-			description: "We explore the cutting edge of science fiction and discuss the social implications of new technology.",
-			image: 'https://images.unsplash.com/photo-1667489022797-ab608913feeb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw5fHx8ZW58MHx8fHw%3D&auto=format&fit=crop&w=800&q=60',
-			members: 18
-		},
-		{
-			id: 3,
-			name: "Mystery and Thriller Group",
-			description: "We delve into the darker side of literature and explore the world of mystery and suspense.",
-			image: 'https://images.unsplash.com/photo-1667489022797-ab608913feeb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw5fHx8ZW58MHx8fHw%3D&auto=format&fit=crop&w=800&q=60',
-			members: 14
-		},
-		{
-			id: 4,
-			name: "The Classics Club",
-			description: "We read and discuss classic literature from around the world.",
-			image: 'https://images.unsplash.com/photo-1667489022797-ab608913feeb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw5fHx8ZW58MHx8fHw%3D&auto=format&fit=crop&w=800&q=60',
-			members: 25
-		},
-		{
-			id: 5,
-			name: "Science Fiction Society",
-			description: "We explore the cutting edge of science fiction and discuss the social implications of new technology.",
-			image: 'https://images.unsplash.com/photo-1667489022797-ab608913feeb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw5fHx8ZW58MHx8fHw%3D&auto=format&fit=crop&w=800&q=60',
-			members: 18
-		},
-		{
-			id: 6,
-			name: "Mystery and Thriller Group",
-			description: "We delve into the darker side of literature and explore the world of mystery and suspense.",
-			image: 'https://images.unsplash.com/photo-1667489022797-ab608913feeb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw5fHx8ZW58MHx8fHw%3D&auto=format&fit=crop&w=800&q=60',
-			members: 14
-		},
-		// Add more book clubs here...
-	];
-
+	
 	const [search, setSearch] = useState("");
 	const [clubs, setClubs] = useState([])
 
@@ -89,7 +44,7 @@ const BookClubs = () => {
 						onChange={(event) => setSearch(event.target.value)}
 					/>
 				</Box>
-				<div className="row row-cols-sm-1 row-cols-lg-2 justify-content-center align-items-center g-4 mx-0">
+				<div className="row row-cols-sm-1 row-cols-lg-3 justify-content-center align-items-center g-4 mx-0">
 
 					{filteredBookClubs.length > 0 ? (
 						filteredBookClubs.map((bookClub, idx) => (

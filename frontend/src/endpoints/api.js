@@ -14,6 +14,11 @@ export const register = (formData) => {
 	return axios.post(`${BASE_URL}register/`, formData);
 };
 
+export const fetchUser = async (userId) => {
+	const res = await fetch(`${BASE_URL}users/${userId}`);
+	const user = await res.json();
+	return user;
+};
 
 export const search = async (query, perPage, page) => {
 	const startIndex = (page - 1) * perPage;
@@ -30,8 +35,6 @@ export const search = async (query, perPage, page) => {
 		totalPages,
 	};
 };
-
-
 
 export const getBook = (key) => {
 	return axios.get(`https://openlibrary.org/works/${key}.json`);
@@ -71,4 +74,5 @@ export const createClub = (data, config) => {
 	});
 	return axios.post(`${BASE_URL}clubs/`, formData, config);
 };
+
 

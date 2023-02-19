@@ -66,7 +66,7 @@ class BookClub(models.Model):
     members = models.ManyToManyField(User, related_name='book_clubs')
     books = models.ManyToManyField(Book, related_name='book_clubs')
     created_at = models.DateTimeField(auto_now_add=True)
-    poster = models.ImageField(upload_to='poster/', null=True)
+    poster = models.ImageField(upload_to='poster/', default='default.png')
     owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 
     class Meta:

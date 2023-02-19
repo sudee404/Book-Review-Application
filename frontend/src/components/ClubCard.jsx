@@ -1,4 +1,4 @@
-import { Button, Card, CardBody, CardFooter, Heading, Image, Stack, Text } from '@chakra-ui/react'
+import { Card, Heading, Link } from '@chakra-ui/react'
 import React, { useState } from 'react'
 import ClubModal from './ClubModal';
 
@@ -12,28 +12,26 @@ export default function ClubCard({ club }) {
 
 	return (
 		<div className='col'>
-			<Card textAlign={'center'} shadow={'md'} _hover={{shadow:'dark-lg',fontWeight:'bold',fontcolor:'blue'}} variant={'filled'}>
+			<Card textAlign={'center'} bg={'bisque'} shadow={'md'} _hover={{shadow:'dark-lg',fontWeight:'bold',fontcolor:'blue'}} variant={'filled'}>
 				<div className="card-header">
 					<ul className="nav nav-tabs card-header-tabs">
 						<li className="nav-item">
-							<a
+							<Link
 								className={`nav-link ${activeTab === '1' ? 'active' : ''}`}
-								href="#"
 								data-tab="1"
 								onClick={handleTabClick}
 							>
 								Name
-							</a>
+							</Link>
 						</li>
 						<li className="nav-item">
-							<a
+							<Link
 								className={`nav-link ${activeTab === '2' ? 'active' : ''}`}
-								href="#"
 								data-tab="2"
 								onClick={handleTabClick}
 							>
 								Description
-							</a>
+							</Link>
 						</li>
 						
 					</ul>
@@ -44,13 +42,14 @@ export default function ClubCard({ club }) {
 							<Heading color={'rosybrown'}>
 								{club.name}
 							</Heading>
-							<ClubModal club={club} />
+							<div className="p-3 text-center">
+								<ClubModal club={club} />
+							</div>
 						</>
 					)}
 					{activeTab === '2' && (
 						<>
-							<div className="lead">{club.description}Some quick example text to build on the card title and make up the bulk of the card's
-								content.</div>
+							<div className="lead">{club.description}</div>
 						</>
 					)}
 					

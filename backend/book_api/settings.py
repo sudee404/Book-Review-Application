@@ -89,7 +89,7 @@ DATABASES = {
         'NAME': 'book-review',
         'USER': 'admin',
         'PASSWORD': '12345',
-        'HOST': 'db', #'db'
+        'HOST': 'localhost', #'db'
         'PORT': 5432,
     }
 }
