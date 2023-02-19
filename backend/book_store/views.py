@@ -240,3 +240,37 @@ class ClubMembersView(views.APIView):
             return Response({'error': 'Invalid token'}, status=status.HTTP_401_UNAUTHORIZED)
         except IndexError:
             return Response({'error': 'No token found, Kindly log in'}, status=status.HTTP_307_TEMPORARY_REDIRECT)
+
+
+class AddBookView(views.APIView):
+
+    def post(self, request, *args, **kwargs):
+        # Get the token from the Authorization header
+
+        try:
+            token = request.META.get('HTTP_AUTHORIZATION', '').split(' ')[1]
+
+            # Decode the token
+            payload = jwt.decode(
+                token, settings.JWT_SECRET_KEY, settings.JWT_ALGORITHM)
+
+            # Set the user to the current authenticated user
+            user = User.objects.get(username=payload['username'])
+            # get club
+            club = BookClub.objects.get(id=request.data['club_id'])
+            book = Book.objects.get_or_create(identifier=request.data['book_id'])[0]
+            club.books.add(book)
+            club.save()
+
+            return Response({'success': 'book added successfully'}, status=status.HTTP_201_CREATED)
+
+        except jwt.ExpiredSignatureError:
+            return Response({'error': 'Token expired'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        except jwt.InvalidSignatureError:
+            return Response({'error': 'Invalid token signature'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        except jwt.DecodeError:
+            return Response({'error': 'Invalid token'}, status=status.HTTP_401_UNAUTHORIZED)
+        except IndexError:
+            return Response({'error': 'No token found, Kindly log in'}, status=status.HTTP_307_TEMPORARY_REDIRECT)

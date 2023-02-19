@@ -6,11 +6,14 @@ import {
 import { useSelector } from 'react-redux'
 import { joinClub } from '../endpoints/api'
 import UserCard from './UserCard';
+import ModalComp from './ModalComp';
+import Products, { ClubProducts } from '../sections/Products';
+import { BookCard1, BookCard2 } from './BookCard';
 
 export default function ClubDetail({ club }) {
 
 	const token = useSelector((state) => state.user.token);
-	const username = useSelector((state) => state.user.username);
+	// const username = useSelector((state) => state.user.username);
 	const userId = useSelector((state) => state.user.id);
 	const [joining, setJoining] = useState(false)
 	const toast = useToast();
@@ -66,9 +69,7 @@ export default function ClubDetail({ club }) {
 							<UserCard userId={club.owner} />
 							{userId === club.owner ?
 								<div className="d-flex justify-content-center align-items-center">
-									<Button colorScheme={'facebook'} _hover={{ bg: 'tomato' }} m={'3'} onClick={handleJoin} isLoading={joining} loadingText='Joining'>
-										Edit Club
-									</Button>
+									<ModalComp title={'Add Books to Group'} button={'Add Book'} element={<ClubProducts club={club} />} size={'l'} />
 									<Button colorScheme={'orange'} _hover={{ bg: 'tomato' }} m={'3'} onClick={handleJoin} isLoading={joining} loadingText='Joining'>
 										Delete Club
 									</Button>
@@ -97,13 +98,13 @@ export default function ClubDetail({ club }) {
 					</div>
 				</div>
 			</div>
-			<div class="p-lg-5 p-2 my-4 bg-light rounded-3">
-				<div class="container-fluid py-5 text-center">
-					<h1 class="display-5 fw-bold">Club Members</h1>
-					<div class="row row-cols-2 justify-content-center align-items-center g-3">
+			<div className="p-lg-5 p-2 my-4 bg-light rounded-3">
+				<div className="container-fluid py-5 text-center">
+					<h1 className="display-5 fw-bold">Club Members</h1>
+					<div className="row row-cols-2 justify-content-center align-items-center g-3">
 						{(club.members && club.members.length > 0) ? club.members.map((member, index) => {
 							return (
-								<div class="col border-dark" key={index}>
+								<div className="col border-dark" key={index}>
 									<UserCard userId={member} />
 								</div>
 							)
@@ -111,6 +112,26 @@ export default function ClubDetail({ club }) {
 						) :
 							<div className='mx-auto pt-3' >
 								<h3 >No members yet</h3>
+							</div>
+
+						}
+					</div>
+				</div>
+			</div>
+			<div className="p-lg-5 p-2 my-4 bg-light rounded-3">
+				<div className="container-fluid py-5 text-center">
+					<h1 className="display-5 fw-bold pb-3">Club Books</h1>
+					<div className="row row-cols-4 justify-content-center align-items-center g-4">
+						{(club.books && club.books.length > 0) ? club.books.map((book_id, index) => {
+							return (
+								<div className="col border-dark" key={index}>
+									<BookCard2 bookId={book_id} club={ club} />
+								</div>
+							)
+						}
+						) :
+							<div className='mx-auto pt-3' >
+								<h3 >No books yet</h3>
 							</div>
 
 						}

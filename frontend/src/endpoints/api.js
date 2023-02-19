@@ -58,6 +58,10 @@ export const joinClub = (data, config) => {
 	return axios.post(`${BASE_URL}join_club/`, data, config);
 };
 
+export const addBook = (data, config) => {
+	return axios.post(`${BASE_URL}add_book/`, data, config);
+};
+
 export const getReviews = async (bookId) => {
 	const response = await fetch(`${BASE_URL}reviews/?book=${bookId}`);
 	return response.json();

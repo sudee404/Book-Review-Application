@@ -13,7 +13,6 @@ const BookClubs = () => {
 	useEffect(() => {
 		getClubs()
 			.then(data => {
-				console.log(data.results)
 				setClubs(data.results)
 			})
 			.catch(errors => console.log(errors))
