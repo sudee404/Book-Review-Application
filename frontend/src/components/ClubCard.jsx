@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 export default function ClubCard({ club }) {
 	const [shadow, setShadow] = useState('md');
 
-	
+
 	return (
 		<div className='col'>
 			<Card
@@ -23,7 +23,7 @@ export default function ClubCard({ club }) {
 				<Image
 					objectFit='cover'
 					maxW={{ base: '100%', sm: '200px' }}
-					src={club.image}
+					src={club.poster}
 					alt={club.name}
 				/>
 

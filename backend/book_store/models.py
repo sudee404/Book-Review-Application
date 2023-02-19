@@ -68,12 +68,14 @@ class BookClub(models.Model):
     books = models.ManyToManyField(Book, related_name='book_clubs')
     created_at = models.DateTimeField(auto_now_add=True)
     poster = models.ImageField(upload_to='poster/', null=True)
+    owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 
     class Meta:
         """Meta definition for BookClub."""
 
         verbose_name = 'Book Club'
         verbose_name_plural = 'Book Clubs'
+        ordering = ['-created_at']
 
     def __str__(self):
         """Unicode representation of BookClub."""
