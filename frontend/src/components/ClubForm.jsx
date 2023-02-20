@@ -77,7 +77,6 @@ export default function ClubForm() {
 			};
 			createClub(formData, config)
 				.then((response) => {
-					console.log(response)
 					setSaving(false)
 					showToast()
 					onClose()

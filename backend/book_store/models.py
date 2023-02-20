@@ -13,7 +13,7 @@ class Book(models.Model):
 
     class Meta:
         """Meta definition for Book."""
-
+        ordering = ['identifier']
         verbose_name = 'Book'
         verbose_name_plural = 'Books'
 
@@ -29,7 +29,6 @@ class Author(models.Model):
 
     class Meta:
         """Meta definition for Author."""
-
         verbose_name = 'Author'
         verbose_name_plural = 'Authors'
 
@@ -50,7 +49,7 @@ class BookReview(models.Model):
 
     class Meta:
         """Meta definition for BookReview."""
-
+        ordering = ['-created_at']
         verbose_name = 'Book Review'
         verbose_name_plural = 'Book Reviews'
 
@@ -67,7 +66,7 @@ class BookClub(models.Model):
     members = models.ManyToManyField(User, related_name='book_clubs')
     books = models.ManyToManyField(Book, related_name='book_clubs')
     created_at = models.DateTimeField(auto_now_add=True)
-    poster = models.ImageField(upload_to='poster/', null=True)
+    poster = models.ImageField(upload_to='poster/', default='default.png')
     owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 
     class Meta:

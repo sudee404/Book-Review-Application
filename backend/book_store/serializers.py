@@ -28,26 +28,26 @@ class LoginSerializer(serializers.Serializer):
     password = serializers.CharField()
 
 
-class BookSerializer(serializers.HyperlinkedModelSerializer):
+class BookSerializer(serializers.ModelSerializer):
    class Meta:
         model = Book
         fields = ('__all__')
 
 
-class BookReviewSerializer(serializers.HyperlinkedModelSerializer):
+class BookReviewSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = BookReview
         fields = ('__all__')
 
 
-class AuthorSerializer(serializers.HyperlinkedModelSerializer):
+class AuthorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Author
         fields = ('__all__')
 
 
-class BookClubSerializer(serializers.HyperlinkedModelSerializer):
+class BookClubSerializer(serializers.ModelSerializer):
     class Meta:
         model = BookClub
         fields = ('__all__')

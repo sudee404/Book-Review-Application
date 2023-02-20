@@ -1,48 +1,60 @@
-import { Button, Card, CardBody, CardFooter, Heading, Image, Stack, Text } from '@chakra-ui/react'
+import { Card, Heading, Link } from '@chakra-ui/react'
 import React, { useState } from 'react'
+import ClubModal from './ClubModal';
 
 export default function ClubCard({ club }) {
-	const [shadow, setShadow] = useState('md');
+	const [activeTab, setActiveTab] = useState('1');
 
+	const handleTabClick = (e) => {
+		e.preventDefault();
+		setActiveTab(e.target.dataset.tab);
+	};
 
 	return (
 		<div className='col'>
-			<Card
-				direction={{ base: 'column', sm: 'row' }}
-				overflow='hidden'
-				variant='outline'
-				shadow={shadow}
-				border={'0'}
-				onMouseOver={() => {
-					setShadow('dark-lg');
-				}}
-				onMouseOut={() => {
-					setShadow('md');
-				}}
-			>
-				<Image
-					objectFit='cover'
-					maxW={{ base: '100%', sm: '200px' }}
-					src={club.poster}
-					alt={club.name}
-				/>
-
-				<Stack>
-					<CardBody>
-						<Heading size='md'>{club.name}</Heading>
-
-						<Text py='2'>
-							{club.description}
-						</Text>
-					</CardBody>
-
-					<CardFooter className='d-flex justify-content-center'>
-						<Button variant='solid' colorScheme={'whatsapp'} bg={'blue'}>
-							Learn More
-						</Button>
-					</CardFooter>
-				</Stack>
+			<Card textAlign={'center'} bg={'bisque'} shadow={'md'} _hover={{shadow:'dark-lg',fontWeight:'bold',fontcolor:'blue'}} variant={'filled'}>
+				<div className="card-header">
+					<ul className="nav nav-tabs card-header-tabs">
+						<li className="nav-item">
+							<Link
+								className={`nav-link ${activeTab === '1' ? 'active' : ''}`}
+								data-tab="1"
+								onClick={handleTabClick}
+							>
+								Name
+							</Link>
+						</li>
+						<li className="nav-item">
+							<Link
+								className={`nav-link ${activeTab === '2' ? 'active' : ''}`}
+								data-tab="2"
+								onClick={handleTabClick}
+							>
+								Description
+							</Link>
+						</li>
+						
+					</ul>
+				</div>
+				<div className="card-body p-2 p-lg-5">
+					{activeTab === '1' && (
+						<>
+							<Heading color={'rosybrown'}>
+								{club.name}
+							</Heading>
+							<div className="p-3 text-center">
+								<ClubModal club={club} />
+							</div>
+						</>
+					)}
+					{activeTab === '2' && (
+						<>
+							<div className="lead">{club.description}</div>
+						</>
+					)}
+					
+				</div>
 			</Card>
 		</div>
-	)
+	);
 }

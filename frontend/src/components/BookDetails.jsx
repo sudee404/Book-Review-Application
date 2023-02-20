@@ -11,6 +11,8 @@ const BookDetails = ({ bookId }) => {
 
 	const [book, setBook] = useState(null);
 	const [loading, setLoading] = useState(true);
+	const [loadingReview, setLoadingReview] = useState(true);
+	const [adding, setAdding] = useState(false)
 	const [rating, setRating] = useState(0)
 	const [reviews, setReviews] = useState([])
 
@@ -26,6 +28,15 @@ const BookDetails = ({ bookId }) => {
 		});
 		setRating(total / reviews.length)
 	}
+	function handleClose() {
+		setLoadingReview(true)
+		getReviews(bookId)
+			.then(data => {
+				setReviews(data)
+				getRating(data)
+				setLoadingReview(false)
+			});
+	}
 
 	useEffect(() => {
 		fetch(`https://openlibrary.org/works/${bookId}.json`)
@@ -35,6 +46,7 @@ const BookDetails = ({ bookId }) => {
 			.then(data => {
 				setReviews(data)
 				getRating(data)
+				setLoadingReview(false)
 			});
 
 	}, [bookId]);
@@ -70,7 +82,7 @@ const BookDetails = ({ bookId }) => {
 								</Button>
 							</div>
 							<div className="col-12">
-								<ReviewModal bookId={bookId} />
+								<ReviewModal bookId={bookId} handleClose={handleClose} />
 							</div>
 						</div>
 					</div>
@@ -109,8 +121,8 @@ const BookDetails = ({ bookId }) => {
 			<div className="p-5 mb-4 bg-light rounded-3">
 				<Heading>About the author(s)</Heading>
 				<div className="container-fluid py-5">
-					{(authors && authors.length > 0) ? authors.map(author => (
-						<AuthorDetails authorId={author.author.key.split('/').pop()} />
+					{(authors && authors.length > 0) ? authors.map((author, idx) => (
+						<AuthorDetails authorId={author.author.key.split('/').pop()} key={idx} />
 					)) : 'No author mentioned'}
 				</div>
 			</div>
@@ -120,7 +132,7 @@ const BookDetails = ({ bookId }) => {
 					<div className="container-fluid py-5">
 						<h1 className="display-5 fw-bold">No reviews </h1>
 						<p className="col-md-8 mx-auto my-2 fs-4">Be the first to add a review below</p>
-						<ReviewModal bookId={bookId} />
+						<ReviewModal bookId={bookId} handleClose={handleClose} />
 					</div>
 				</div>
 			)}

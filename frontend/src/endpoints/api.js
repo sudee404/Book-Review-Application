@@ -14,6 +14,11 @@ export const register = (formData) => {
 	return axios.post(`${BASE_URL}register/`, formData);
 };
 
+export const fetchUser = async (userId) => {
+	const res = await fetch(`${BASE_URL}users/${userId}`);
+	const user = await res.json();
+	return user;
+};
 
 export const search = async (query, perPage, page) => {
 	const startIndex = (page - 1) * perPage;
@@ -31,14 +36,17 @@ export const search = async (query, perPage, page) => {
 	};
 };
 
-
-
 export const getBook = (key) => {
 	return axios.get(`https://openlibrary.org/works/${key}.json`);
 };
 
-export const getClubs = async () => {
-	const response = await fetch(`${BASE_URL}clubs/`);
+export const getClubs = async (page) => {
+	const response = await fetch(`${BASE_URL}clubs/?page=${page}`);
+	return await response.json();
+};
+
+export const getClub = async (clubId) => {
+	const response = await fetch(`${BASE_URL}clubs/${clubId}`);
 	return await response.json();
 };
 
@@ -49,6 +57,18 @@ export const getAuthor = async (key) => {
 
 export const submitReview = (data, config) => {
 	return axios.post(`${BASE_URL}reviews/`, data, config);
+};
+
+export const joinClub = (data, config) => {
+	return axios.post(`${BASE_URL}join_club/`, data, config);
+};
+
+export const leaveClub = (data, config) => {
+	return axios.post(`${BASE_URL}leave_club/`, data, config);
+};
+
+export const addBook = (data, config) => {
+	return axios.post(`${BASE_URL}add_book/`, data, config);
 };
 
 export const getReviews = async (bookId) => {
@@ -67,4 +87,5 @@ export const createClub = (data, config) => {
 	});
 	return axios.post(`${BASE_URL}clubs/`, formData, config);
 };
+
 

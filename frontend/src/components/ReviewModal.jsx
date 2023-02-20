@@ -15,7 +15,7 @@ import { submitReview } from '../endpoints/api'
 import { StarIcon } from '@chakra-ui/icons'
 import { useSelector } from 'react-redux';
 
-export default function ReviewModal({ bookId }) {
+export default function ReviewModal({ bookId, handleClose }) {
 	const OverlayOne = () => (
 		<ModalOverlay
 			bg='none'
@@ -32,6 +32,15 @@ export default function ReviewModal({ bookId }) {
 	const token = useSelector((state) => state.user.token);
 	const toast = useToast();
 
+	const showToast = (status, message) => {
+		return toast({
+			title: status,
+			description: message,
+			status: status,
+			duration: 3000,
+			isClosable: true,
+		})
+	}
 
 
 	const handleChange = (e) => {
@@ -45,33 +54,18 @@ export default function ReviewModal({ bookId }) {
 		};
 		await submitReview(data, config)
 			.then((response) => {
-				toast({
-					title: "Success",
-					description: response.data['message'],
-					status: "success",
-					duration: 3000,
-					isClosable: true,
-				});
+				showToast('success', response.data['message'])
+				setReview('')
+				setRating(0)
+				handleClose()
 				onClose()
 			})
 			.catch((errors) => {
 				console.log(errors)
-				if (errors.response.data['review']) {
-					toast({
-						title: "Warning!",
-						description: 'Please type something first',
-						status: "warning",
-						duration: 3000,
-						isClosable: true,
-					});
+				if (errors.response.data['error']) {
+					showToast('error', errors.response.data['error'][0])
 				} else {
-					toast({
-						title: "Error.",
-						description: "An error occured",
-						status: "error",
-						duration: 3000,
-						isClosable: true,
-					});
+					showToast('error', 'Something went wrong')
 				}
 
 

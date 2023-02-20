@@ -14,4 +14,7 @@ urlpatterns = [
     path('login/', LoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('register/', RegisterView.as_view(), name='register'),
+    path('join_club/', ClubMembersView.as_view(), name='members-add'),
+    path('leave_club/', ClubMemberRemoveView.as_view(), name='members-remove'),
+    path('add_book/', AddBookView.as_view(), name='add-book'),
 ]

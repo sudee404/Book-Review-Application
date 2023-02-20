@@ -8,11 +8,10 @@ import {
 	ModalBody,
 	ModalCloseButton,
 	Button,
-	Text,
 	useDisclosure
 } from '@chakra-ui/react'
 
-export default function ModalComp() {
+export default function ModalComp({ title, element, button ,size}) {
 	const OverlayOne = () => (
 		<ModalOverlay
 			bg='blackAlpha.300'
@@ -32,32 +31,25 @@ export default function ModalComp() {
 	const { isOpen, onOpen, onClose } = useDisclosure()
 	const [overlay, setOverlay] = React.useState(<OverlayOne />)
 
+	if (!isOpen) {
+		return <Button colorScheme={'facebook'} _hover={{ bg: 'tomato' }} m={'3'}
+			onClick={() => {
+				setOverlay(<OverlayTwo />)
+				onOpen()
+			}}
+			loadingText='Joining'>
+			{button}
+		</Button>
+	}
+
 	return (
 		<>
-			<Button
-				onClick={() => {
-					setOverlay(<OverlayOne />)
-					onOpen()
-				}}
-			>
-				Use Overlay one
-			</Button>
-			<Button
-				ml='4'
-				onClick={() => {
-					setOverlay(<OverlayTwo />)
-					onOpen()
-				}}
-			>
-				Use Overlay two
-			</Button>
-			<Modal isCentered isOpen={isOpen} onClose={onClose}>
+			<Modal size={size} isOpen={isOpen} onClose={onClose}>
 				{overlay}
 				<ModalContent>
-					<ModalHeader>{props.title}</ModalHeader>
 					<ModalCloseButton />
 					<ModalBody>
-							{props.body}
+						{element}
 					</ModalBody>
 					<ModalFooter>
 						<Button onClick={onClose}>Close</Button>

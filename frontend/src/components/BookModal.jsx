@@ -28,12 +28,59 @@ export default function BookModal({ book }) {
 
 	if (!isOpen) {
 		return <Button
-			bg={'teal'}
+			bg={'telegram.300'}
 			onClick={() => {
 				setOverlay(<OverlayOne />)
 				onOpen()
 			}}
 			
+		>
+			Book Details
+		</Button>
+
+	}
+	return (
+		<>
+
+
+			<Modal isOpen={isOpen} size={'l'} onClose={onClose}>
+				{overlay}
+				<ModalContent>
+					<ModalHeader className='fw-bold fs-2 text-center'>{''}</ModalHeader>
+					<ModalBody>
+						<BookDetails bookId={bookId} />
+					</ModalBody>
+					<ModalFooter>
+						<Button onClick={onClose}>Back</Button>
+					</ModalFooter>
+				</ModalContent>
+			</Modal>
+		</>
+	)
+}
+
+export function BookModal1({ bookId }) {
+
+	const OverlayOne = () => (
+		<ModalOverlay
+			bg='none'
+			backdropFilter='auto'
+			backdropInvert='70%'
+			backdropBlur='2px'
+		/>
+	)
+	const { isOpen, onOpen, onClose } = useDisclosure()
+	const [overlay, setOverlay] = React.useState(<OverlayOne />)
+
+
+	if (!isOpen) {
+		return <Button
+			bg={'telegram.300'}
+			onClick={() => {
+				setOverlay(<OverlayOne />)
+				onOpen()
+			}}
+
 		>
 			Book Details
 		</Button>

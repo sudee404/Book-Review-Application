@@ -14,7 +14,7 @@ export default function ErrorPage() {
 					<div className="col-12 lead p-lg-5 pt-0 fw-bold">
 						Sorry, an unexpected error has occurred
 					</div>
-					<Link type="button" className="btn btn-primary fw-bold" to={'/'}>Go Back</Link>
+					<Link type="button" className="btn btn-primary fw-bold" to={'/'}>Go Home</Link>
 				</div>
 			</div>
 		</div>

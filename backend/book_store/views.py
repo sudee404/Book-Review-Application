@@ -91,7 +91,7 @@ class BookViewSet(viewsets.ModelViewSet):
 
 
 class BookReviewViewSet(viewsets.ModelViewSet):
-    """This is the viewset that handles all actions at /projects endpoint"""
+    """This is the viewset that handles all actions at /reviews endpoint"""
     queryset = BookReview.objects.all().order_by('created_at')
     serializer_class = BookReviewSerializer
     authentication_classes = ()
@@ -126,8 +126,8 @@ class BookReviewViewSet(viewsets.ModelViewSet):
             # Create review
             review = BookReview.objects.create(
                 book=book, user=user, review=request.data['review'], rating=request.data['rating'])
-
-            return Response({'message': 'review added successfully'}, status=status.HTTP_201_CREATED)
+            review.save()
+            return Response({'message': 'Review added successfully'}, status=status.HTTP_201_CREATED)
 
         except jwt.ExpiredSignatureError:
             return Response({'error': 'Token expired'}, status=status.HTTP_401_UNAUTHORIZED)
@@ -142,21 +142,21 @@ class BookReviewViewSet(viewsets.ModelViewSet):
 
 
 class AuthorViewSet(viewsets.ModelViewSet):
-    """This is the viewset that handles all actions at /projects endpoint"""
+    """This is the viewset that handles all actions at /authors endpoint"""
     queryset = Author.objects.all()
     serializer_class = AuthorSerializer
     permission_classes = []
 
 
 class UserViewSet(viewsets.ModelViewSet):
-    """This is the viewset that handles all actions at /projects endpoint"""
+    """This is the viewset that handles all actions at /users endpoint"""
     queryset = get_user_model().objects.all()
     serializer_class = UserSerializer
     permission_classes = []
 
 
 class BookClubViewSet(viewsets.ModelViewSet):
-    """This is the viewset that handles all actions at /projects endpoint"""
+    """This is the viewset that handles all actions at /books endpoint"""
     queryset = BookClub.objects.all()
     serializer_class = BookClubSerializer
     permission_classes = []
@@ -196,6 +196,106 @@ class BookClubViewSet(viewsets.ModelViewSet):
             club.save()
 
             return Response({'message': 'club added successfully'}, status=status.HTTP_201_CREATED)
+
+        except jwt.ExpiredSignatureError:
+            return Response({'error': 'Token expired'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        except jwt.InvalidSignatureError:
+            return Response({'error': 'Invalid token signature'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        except jwt.DecodeError:
+            return Response({'error': 'Invalid token'}, status=status.HTTP_401_UNAUTHORIZED)
+        except IndexError:
+            return Response({'error': 'No token found, Kindly log in'}, status=status.HTTP_307_TEMPORARY_REDIRECT)
+
+
+class ClubMembersView(views.APIView):
+
+    def post(self, request, *args, **kwargs):
+        # Get the token from the Authorization header
+
+        try:
+            token = request.META.get('HTTP_AUTHORIZATION', '').split(' ')[1]
+
+            # Decode the token
+            payload = jwt.decode(
+                token, settings.JWT_SECRET_KEY, settings.JWT_ALGORITHM)
+
+            # Set the user to the current authenticated user
+            user = User.objects.get(username=payload['username'])
+            # get club
+            club = BookClub.objects.get(id=request.data['club_id'])
+            club.members.add(user)
+            club.save()
+            
+            return Response({'success': 'review added successfully'}, status=status.HTTP_201_CREATED)
+
+        except jwt.ExpiredSignatureError:
+            return Response({'error': 'Token expired'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        except jwt.InvalidSignatureError:
+            return Response({'error': 'Invalid token signature'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        except jwt.DecodeError:
+            return Response({'error': 'Invalid token'}, status=status.HTTP_401_UNAUTHORIZED)
+        except IndexError:
+            return Response({'error': 'No token found, Kindly log in'}, status=status.HTTP_307_TEMPORARY_REDIRECT)
+
+
+class ClubMemberRemoveView(views.APIView):
+
+    def post(self, request, *args, **kwargs):
+        # Get the token from the Authorization header
+
+        try:
+            token = request.META.get('HTTP_AUTHORIZATION', '').split(' ')[1]
+
+            # Decode the token
+            payload = jwt.decode(
+                token, settings.JWT_SECRET_KEY, settings.JWT_ALGORITHM)
+
+            # Set the user to the current authenticated user
+            user = User.objects.get(username=payload['username'])
+            # get club
+            club = BookClub.objects.get(id=request.data['club_id'])
+            club.members.remove(user)
+            club.save()
+
+            return Response({'success': 'Club left successfully'}, status=status.HTTP_201_CREATED)
+
+        except jwt.ExpiredSignatureError:
+            return Response({'error': 'Token expired'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        except jwt.InvalidSignatureError:
+            return Response({'error': 'Invalid token signature'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        except jwt.DecodeError:
+            return Response({'error': 'Invalid token'}, status=status.HTTP_401_UNAUTHORIZED)
+        except IndexError:
+            return Response({'error': 'No token found, Kindly log in'}, status=status.HTTP_307_TEMPORARY_REDIRECT)
+
+
+class AddBookView(views.APIView):
+
+    def post(self, request, *args, **kwargs):
+        # Get the token from the Authorization header
+
+        try:
+            token = request.META.get('HTTP_AUTHORIZATION', '').split(' ')[1]
+
+            # Decode the token
+            payload = jwt.decode(
+                token, settings.JWT_SECRET_KEY, settings.JWT_ALGORITHM)
+
+            # Set the user to the current authenticated user
+            user = User.objects.get(username=payload['username'])
+            # get club
+            club = BookClub.objects.get(id=request.data['club_id'])
+            book = Book.objects.get_or_create(identifier=request.data['book_id'])[0]
+            club.books.add(book)
+            club.save()
+
+            return Response({'success': 'book added successfully'}, status=status.HTTP_201_CREATED)
 
         except jwt.ExpiredSignatureError:
             return Response({'error': 'Token expired'}, status=status.HTTP_401_UNAUTHORIZED)

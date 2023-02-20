@@ -6,63 +6,23 @@ import { getClubs } from "../endpoints/api";
 import { useEffect } from "react";
 
 const BookClubs = () => {
-	const bookClubs = [
-		{
-			id: 1,
-			name: "The Classics Club",
-			description: "We read and discuss classic literature from around the world.",
-			image: 'https://images.unsplash.com/photo-1667489022797-ab608913feeb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw5fHx8ZW58MHx8fHw%3D&auto=format&fit=crop&w=800&q=60',
-			members: 25
-		},
-		{
-			id: 2,
-			name: "Science Fiction Society",
-			description: "We explore the cutting edge of science fiction and discuss the social implications of new technology.",
-			image: 'https://images.unsplash.com/photo-1667489022797-ab608913feeb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw5fHx8ZW58MHx8fHw%3D&auto=format&fit=crop&w=800&q=60',
-			members: 18
-		},
-		{
-			id: 3,
-			name: "Mystery and Thriller Group",
-			description: "We delve into the darker side of literature and explore the world of mystery and suspense.",
-			image: 'https://images.unsplash.com/photo-1667489022797-ab608913feeb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw5fHx8ZW58MHx8fHw%3D&auto=format&fit=crop&w=800&q=60',
-			members: 14
-		},
-		{
-			id: 4,
-			name: "The Classics Club",
-			description: "We read and discuss classic literature from around the world.",
-			image: 'https://images.unsplash.com/photo-1667489022797-ab608913feeb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw5fHx8ZW58MHx8fHw%3D&auto=format&fit=crop&w=800&q=60',
-			members: 25
-		},
-		{
-			id: 5,
-			name: "Science Fiction Society",
-			description: "We explore the cutting edge of science fiction and discuss the social implications of new technology.",
-			image: 'https://images.unsplash.com/photo-1667489022797-ab608913feeb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw5fHx8ZW58MHx8fHw%3D&auto=format&fit=crop&w=800&q=60',
-			members: 18
-		},
-		{
-			id: 6,
-			name: "Mystery and Thriller Group",
-			description: "We delve into the darker side of literature and explore the world of mystery and suspense.",
-			image: 'https://images.unsplash.com/photo-1667489022797-ab608913feeb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw5fHx8ZW58MHx8fHw%3D&auto=format&fit=crop&w=800&q=60',
-			members: 14
-		},
-		// Add more book clubs here...
-	];
-
+	
 	const [search, setSearch] = useState("");
 	const [clubs, setClubs] = useState([])
+	const [page, setPage] = useState(1)
+	const [totalResults, setTotalResults] = useState(0);
+	const [totalPages, setTotalPages] = useState(0);
+	const [perPage, setPerPage] = useState(9);
 
 	useEffect(() => {
-		getClubs()
+		getClubs(page)
 			.then(data => {
-				console.log(data.results)
 				setClubs(data.results)
+				setTotalResults(data.count)
+				setTotalPages(Math.ceil(data.count / perPage))
 			})
 			.catch(errors => console.log(errors))
-	}, [])
+	}, [page,perPage])
 
 	const filteredBookClubs = clubs.filter((bookClub) => {
 		return bookClub.name.toLowerCase().includes(search.toLowerCase());
@@ -89,7 +49,7 @@ const BookClubs = () => {
 						onChange={(event) => setSearch(event.target.value)}
 					/>
 				</Box>
-				<div className="row row-cols-sm-1 row-cols-lg-2 justify-content-center align-items-center g-4 mx-0">
+				<div className="row row-cols-sm-1 row-cols-lg-3 justify-content-center align-items-center g-4 mx-0">
 
 					{filteredBookClubs.length > 0 ? (
 						filteredBookClubs.map((bookClub, idx) => (
@@ -102,6 +62,64 @@ const BookClubs = () => {
 					)}
 				</div>
 			</div>
+			{totalResults >= 9 && (
+				<div className="col-12 p-lg-5 py-4">
+					<nav aria-label="Page navigation example">
+						<ul className="pagination justify-content-center">
+							<li className={`page-item ${page === 1 ? "disabled" : ""}`}>
+								<button
+									className="page-link"
+									disabled={page === 1}
+									onClick={() => setPage(page - 1)}
+								>
+									Previous
+								</button>
+							</li>
+
+							{[...Array(totalPages)].map((_, index) => {
+								if (
+									index + 1 === page ||
+									(index + 1 >= page - 2 && index + 1 <= page + 2) ||
+									index + 1 === totalPages
+								) {
+									return (
+										<li
+											key={index}
+											className={`page-item ${index + 1 === page ? "active" : ""}`}
+										>
+											<button className="page-link" onClick={() => setPage(index + 1)}>
+												{index + 1}
+											</button>
+										</li>
+									);
+								}
+								if (
+									index + 1 === page - 3 ||
+									index + 1 === page + 3 ||
+									index + 1 === 1
+								) {
+									return (
+										<li key={index} className="page-item disabled">
+											<span className="page-link">...</span>
+										</li>
+									);
+								}
+								return null;
+							})}
+							<li className={`page-item ${page === totalPages ? "disabled" : ""}`}>
+								<button
+									className="page-link"
+									disabled={page === totalPages}
+									onClick={() => setPage(page + 1)}
+								>
+									Next
+								</button>
+							</li>
+						</ul>
+					</nav>
+
+				</div>
+			)}
 
 
 		</>
