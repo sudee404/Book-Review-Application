@@ -9,14 +9,20 @@ const BookClubs = () => {
 	
 	const [search, setSearch] = useState("");
 	const [clubs, setClubs] = useState([])
+	const [page, setPage] = useState(1)
+	const [totalResults, setTotalResults] = useState(0);
+	const [totalPages, setTotalPages] = useState(0);
+	const [perPage, setPerPage] = useState(9);
 
 	useEffect(() => {
-		getClubs()
+		getClubs(page)
 			.then(data => {
 				setClubs(data.results)
+				setTotalResults(data.count)
+				setTotalPages(Math.ceil(data.count / perPage))
 			})
 			.catch(errors => console.log(errors))
-	}, [])
+	}, [page,perPage])
 
 	const filteredBookClubs = clubs.filter((bookClub) => {
 		return bookClub.name.toLowerCase().includes(search.toLowerCase());
@@ -56,6 +62,64 @@ const BookClubs = () => {
 					)}
 				</div>
 			</div>
+			{totalResults >= 9 && (
+				<div className="col-12 p-lg-5 py-4">
+					<nav aria-label="Page navigation example">
+						<ul className="pagination justify-content-center">
+							<li className={`page-item ${page === 1 ? "disabled" : ""}`}>
+								<button
+									className="page-link"
+									disabled={page === 1}
+									onClick={() => setPage(page - 1)}
+								>
+									Previous
+								</button>
+							</li>
+
+							{[...Array(totalPages)].map((_, index) => {
+								if (
+									index + 1 === page ||
+									(index + 1 >= page - 2 && index + 1 <= page + 2) ||
+									index + 1 === totalPages
+								) {
+									return (
+										<li
+											key={index}
+											className={`page-item ${index + 1 === page ? "active" : ""}`}
+										>
+											<button className="page-link" onClick={() => setPage(index + 1)}>
+												{index + 1}
+											</button>
+										</li>
+									);
+								}
+								if (
+									index + 1 === page - 3 ||
+									index + 1 === page + 3 ||
+									index + 1 === 1
+								) {
+									return (
+										<li key={index} className="page-item disabled">
+											<span className="page-link">...</span>
+										</li>
+									);
+								}
+								return null;
+							})}
+							<li className={`page-item ${page === totalPages ? "disabled" : ""}`}>
+								<button
+									className="page-link"
+									disabled={page === totalPages}
+									onClick={() => setPage(page + 1)}
+								>
+									Next
+								</button>
+							</li>
+						</ul>
+					</nav>
+
+				</div>
+			)}
 
 
 		</>

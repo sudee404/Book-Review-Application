@@ -40,8 +40,13 @@ export const getBook = (key) => {
 	return axios.get(`https://openlibrary.org/works/${key}.json`);
 };
 
-export const getClubs = async () => {
-	const response = await fetch(`${BASE_URL}clubs/`);
+export const getClubs = async (page) => {
+	const response = await fetch(`${BASE_URL}clubs/?page=${page}`);
+	return await response.json();
+};
+
+export const getClub = async (clubId) => {
+	const response = await fetch(`${BASE_URL}clubs/${clubId}`);
 	return await response.json();
 };
 
@@ -56,6 +61,10 @@ export const submitReview = (data, config) => {
 
 export const joinClub = (data, config) => {
 	return axios.post(`${BASE_URL}join_club/`, data, config);
+};
+
+export const leaveClub = (data, config) => {
+	return axios.post(`${BASE_URL}leave_club/`, data, config);
 };
 
 export const addBook = (data, config) => {

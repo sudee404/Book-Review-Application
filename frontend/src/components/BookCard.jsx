@@ -48,7 +48,7 @@ export default function BookCard({ book }) {
 		</div>
 	)
 }
-export function BookCard1({ book, club }) {
+export function BookCard1({ book, club,setAdding1 }) {
 
 	const [loading, setLoading] = useState(true);
 	const [adding, setAdding] = useState(false)
@@ -84,6 +84,7 @@ export function BookCard1({ book, club }) {
 				showToast('success', response.data.message)
 				setAdded(true)
 				setAdding(false);
+				setAdding1(true)
 			})
 			.catch(errors => {
 				showToast('error', errors.response.data.message)

@@ -48,7 +48,7 @@ export default function ClubModal({ club }) {
 				<ModalContent>
 					<ModalHeader className='fw-bold fs-2 text-center my-3' >Club Page - <span className='text-danger'>{club.name}</span></ModalHeader>
 					<ModalBody>
-						<ClubDetail club={club}/>
+						<ClubDetail clubId={club.id}/>
 					</ModalBody>
 					<ModalFooter>
 						<Button onClick={onClose}>Back</Button>

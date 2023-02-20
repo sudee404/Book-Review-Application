@@ -126,8 +126,8 @@ class BookReviewViewSet(viewsets.ModelViewSet):
             # Create review
             review = BookReview.objects.create(
                 book=book, user=user, review=request.data['review'], rating=request.data['rating'])
-
-            return Response({'message': 'review added successfully'}, status=status.HTTP_201_CREATED)
+            review.save()
+            return Response({'message': 'Review added successfully'}, status=status.HTTP_201_CREATED)
 
         except jwt.ExpiredSignatureError:
             return Response({'error': 'Token expired'}, status=status.HTTP_401_UNAUTHORIZED)
@@ -229,6 +229,39 @@ class ClubMembersView(views.APIView):
             club.save()
             
             return Response({'success': 'review added successfully'}, status=status.HTTP_201_CREATED)
+
+        except jwt.ExpiredSignatureError:
+            return Response({'error': 'Token expired'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        except jwt.InvalidSignatureError:
+            return Response({'error': 'Invalid token signature'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        except jwt.DecodeError:
+            return Response({'error': 'Invalid token'}, status=status.HTTP_401_UNAUTHORIZED)
+        except IndexError:
+            return Response({'error': 'No token found, Kindly log in'}, status=status.HTTP_307_TEMPORARY_REDIRECT)
+
+
+class ClubMemberRemoveView(views.APIView):
+
+    def post(self, request, *args, **kwargs):
+        # Get the token from the Authorization header
+
+        try:
+            token = request.META.get('HTTP_AUTHORIZATION', '').split(' ')[1]
+
+            # Decode the token
+            payload = jwt.decode(
+                token, settings.JWT_SECRET_KEY, settings.JWT_ALGORITHM)
+
+            # Set the user to the current authenticated user
+            user = User.objects.get(username=payload['username'])
+            # get club
+            club = BookClub.objects.get(id=request.data['club_id'])
+            club.members.remove(user)
+            club.save()
+
+            return Response({'success': 'Club left successfully'}, status=status.HTTP_201_CREATED)
 
         except jwt.ExpiredSignatureError:
             return Response({'error': 'Token expired'}, status=status.HTTP_401_UNAUTHORIZED)

@@ -172,7 +172,7 @@ export default function Products() {
 }
 
 
-export function ClubProducts({club}) {
+export function ClubProducts({club,setAdding}) {
 	const [query, setQuery] = useState(randomWord)
 	const [queryText, setQueryText] = useState()
 	const [loading, setLoading] = useState(false)
@@ -263,7 +263,7 @@ export function ClubProducts({club}) {
 
 							return (
 								<div className="col-lg-4 col-md-6 col-sm-12" key={book.key}>
-									<BookCard1 book={book} club={club}/>
+									<BookCard1 book={book} club={club} setAdding1={ setAdding} />
 								</div>
 
 							)
