@@ -55,7 +55,7 @@ export default function ClubDetail({ clubId }) {
 		joinClub(data, config)
 			.then(res => {
 				setJoining(false)
-				showToast('success', 'Joined club successfully')
+				showToast('success', 'You joined the book club')
 			})
 			.catch(err => {
 				setJoining(false)
