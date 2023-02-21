@@ -6,6 +6,7 @@ router = routers.DefaultRouter()
 router.register(r'books', BookViewSet)
 router.register(r'authors', AuthorViewSet)
 router.register(r'reviews', BookReviewViewSet)
+router.register(r'user_books', UserBookViewSet)
 router.register(r'users', UserViewSet)
 router.register(r'clubs', BookClubViewSet)
 

@@ -1,10 +1,11 @@
-from .serializers import AuthorSerializer, BookReviewSerializer, BookSerializer, BookClubSerializer
+from rest_framework import status
+from .serializers import AuthorSerializer, BookReviewSerializer, BookSerializer, BookClubSerializer, UserBookSerializer
 from django.contrib.auth import authenticate, logout, get_user_model
 from rest_framework import status, views, viewsets
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from .serializers import LoginSerializer, UserSerializer
-from .models import Author, Book, BookReview, BookClub
+from .models import Author, Book, BookReview, BookClub, UserBook
 from rest_framework.response import Response
 from django.conf import settings
 from jwt import encode as jwt_encode
@@ -141,6 +142,74 @@ class BookReviewViewSet(viewsets.ModelViewSet):
             return Response({'error': 'No token found, Kindly log in'}, status=status.HTTP_307_TEMPORARY_REDIRECT)
 
 
+class UserBookViewSet(viewsets.ModelViewSet):
+    """This is the viewset that handles all actions at /user_books endpoint"""
+    queryset = UserBook.objects.all().order_by('user')
+    serializer_class = UserBookSerializer
+    authentication_classes = ()
+    permission_classes = ()
+
+    def list(self, request, *args, **kwargs):
+        # Get book id to filter reviews
+        book_id = request.query_params.get('book', None)
+        user_id = request.query_params.get('user', None)
+
+        if book_id and user_id:
+            user_book = UserBook.objects.get(
+                user__id=user_id, book__identifier=book_id)
+            serializer = self.serializer_class(
+                user_book, many=False, context={'request': request})
+
+        elif user_id:
+            user_books = UserBook.objects.filter(user__id=user_id)
+            serializer = self.serializer_class(
+                user_books, many=True, context={'request': request})
+
+        else:
+            queryset = super().get_queryset()
+            serializer = self.serializer_class(
+                queryset, many=True, context={'request': request})
+
+        return Response(serializer.data)
+
+    def create(self, request, *args, **kwargs):
+        # Get the token from the Authorization header
+
+        try:
+            token = request.META.get('HTTP_AUTHORIZATION', '').split(' ')[1]
+
+            # Decode the token
+            payload = jwt.decode(
+                token, settings.JWT_SECRET_KEY, settings.JWT_ALGORITHM)
+
+            # Get retrieved variables
+            book_id = request.data['bookId']
+            status_choice = request.data['status']
+
+            # Set the user to the current authenticated user
+            user = User.objects.get(username=payload['username'])
+            # Create or get book
+            book = Book.objects.get_or_create(
+                identifier=book_id)[0]
+            # Create userbook object
+            user_book = UserBook.objects.get_or_create(
+                book=book, user=user)[0]
+            user_book.status = status_choice
+            user_book.save()
+            return Response({'message': f'Added to {status_choice} successfully'}, status=status.HTTP_201_CREATED)
+
+        except jwt.ExpiredSignatureError:
+            return Response({'error': 'Token expired'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        except jwt.InvalidSignatureError:
+            return Response({'error': 'Invalid token signature'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        except jwt.DecodeError:
+            return Response({'error': 'Invalid token'}, status=status.HTTP_401_UNAUTHORIZED)
+        except IndexError:
+            return Response({'error': 'No token found, Kindly log in'}, status=status.HTTP_307_TEMPORARY_REDIRECT)
+
+
 class AuthorViewSet(viewsets.ModelViewSet):
     """This is the viewset that handles all actions at /authors endpoint"""
     queryset = Author.objects.all()
@@ -162,16 +231,27 @@ class BookClubViewSet(viewsets.ModelViewSet):
     permission_classes = []
     parser_classes = [MultiPartParser]
 
-    # def list(self, request, *args, **kwargs):
-    #     queryset = super().get_queryset()
-    #     # Get book id to filter reviews
-    #     book_id = request.query_params.get('book', None)
-    #     if book_id is not None:
-    #         queryset = queryset.filter(book_id=book_id)
+    def list(self, request, *args, **kwargs):
+        queryset = super().get_queryset()
+        owner_id = request.query_params.get('owner', None)
+        member_id = request.query_params.get('member', None)
 
-    #     serializer = self.serializer_class(
-    #         queryset, many=True, context={'request': request})
-    #     return Response(serializer.data)
+        if owner_id:
+            queryset = queryset.filter(owner_id=owner_id)
+        if member_id:
+            queryset = queryset.filter(members__id=member_id)
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.serializer_class(
+                page, many=True, context={'request': request})
+            return self.get_paginated_response(serializer.data)
+
+        # if no results were found, return an empty response with next pointing to the second page
+        paginator = self.pagination_class()
+        paginator.page.number = 2
+        return paginator.get_paginated_response([])
+
 
     def create(self, request, *args, **kwargs):
         # Get the token from the Authorization header
@@ -227,7 +307,7 @@ class ClubMembersView(views.APIView):
             club = BookClub.objects.get(id=request.data['club_id'])
             club.members.add(user)
             club.save()
-            
+
             return Response({'success': 'review added successfully'}, status=status.HTTP_201_CREATED)
 
         except jwt.ExpiredSignatureError:
@@ -291,7 +371,8 @@ class AddBookView(views.APIView):
             user = User.objects.get(username=payload['username'])
             # get club
             club = BookClub.objects.get(id=request.data['club_id'])
-            book = Book.objects.get_or_create(identifier=request.data['book_id'])[0]
+            book = Book.objects.get_or_create(
+                identifier=request.data['book_id'])[0]
             club.books.add(book)
             club.save()
 

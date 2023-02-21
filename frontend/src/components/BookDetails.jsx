@@ -1,11 +1,12 @@
 import { StarIcon } from '@chakra-ui/icons';
+import { Button, Heading } from "@chakra-ui/react";
 import React, { useState, useEffect } from 'react';
 import Loader from './Loader';
 import Reviews from '../sections/Reviews'
 import ReviewModal from './ReviewModal';
-import { Button, Heading } from '@chakra-ui/react';
 import { getReviews } from '../endpoints/api';
 import AuthorDetails from './AuthorDetails'
+import AddUserBook from './AddUserBook';
 
 const BookDetails = ({ bookId }) => {
 
@@ -15,6 +16,7 @@ const BookDetails = ({ bookId }) => {
 	const [adding, setAdding] = useState(false)
 	const [rating, setRating] = useState(0)
 	const [reviews, setReviews] = useState([])
+	
 
 	const handleImageLoad = (e) => {
 		e.preventDefault()
@@ -37,6 +39,8 @@ const BookDetails = ({ bookId }) => {
 				setLoadingReview(false)
 			});
 	}
+
+	
 
 	useEffect(() => {
 		fetch(`https://openlibrary.org/works/${bookId}.json`)
@@ -74,13 +78,7 @@ const BookDetails = ({ bookId }) => {
 						/>
 
 						<div className="row text-center align-items-center g-2 mx-0 p-3">
-							<div className="col-12">
-								<Button
-									bg={'bisque'}
-								>
-									Add to List
-								</Button>
-							</div>
+							<AddUserBook bookId={bookId } />
 							<div className="col-12">
 								<ReviewModal bookId={bookId} handleClose={handleClose} />
 							</div>
