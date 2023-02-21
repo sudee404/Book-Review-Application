@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.utils.translation import gettext_lazy as _
 
 User = get_user_model()
 
@@ -79,3 +80,31 @@ class BookClub(models.Model):
     def __str__(self):
         """Unicode representation of BookClub."""
         self.name
+
+
+class UserBook(models.Model):
+    """Model definition for UserBook."""
+
+    class StatusChoices(models.TextChoices):
+        CURRENTLY_READING = 'CR', _('Currently Reading')
+        PLANNING_TO_READ = 'PR', _('Planning to Read')
+        ALREADY_READ = 'AR', _('Already Read')
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_books')
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='user_books')
+    status = models.CharField(max_length=2, choices=StatusChoices.choices, default=StatusChoices.PLANNING_TO_READ)
+    started_reading_at = models.DateTimeField(null=True, blank=True)
+    finished_reading_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        unique_together = ('user', 'book')
+
+
+class BookVote(models.Model):
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    book_club = models.ForeignKey(BookClub, on_delete=models.CASCADE)
+    voters = models.ManyToManyField(User, verbose_name='book voters')
+
+    def get_votes(self):
+        return self.voters.count()
+

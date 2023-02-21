@@ -59,6 +59,22 @@ export const submitReview = (data, config) => {
 	return axios.post(`${BASE_URL}reviews/`, data, config);
 };
 
+export const addUserBook = (data, config) => {
+	return axios.post(`${BASE_URL}user_books/`, data, config);
+};
+
+export const getUserBooks = async (bookId, userId) => {
+	return await axios.get(
+		`${BASE_URL}user_books/?book=${bookId}&user=${userId}`
+	);
+};
+
+export const getUserClubs = async (userId, userId1) => {
+	return await axios.get(
+		`${BASE_URL}clubs/?owner=${userId}&member=${userId1}`
+	);
+};
+
 export const joinClub = (data, config) => {
 	return axios.post(`${BASE_URL}join_club/`, data, config);
 };
@@ -87,5 +103,3 @@ export const createClub = (data, config) => {
 	});
 	return axios.post(`${BASE_URL}clubs/`, formData, config);
 };
-
-

@@ -48,7 +48,7 @@ export default function BookCard({ book }) {
 		</div>
 	)
 }
-export function BookCard1({ book, club,setAdding1 }) {
+export function BookCard1({ book, club, setAdding1 }) {
 
 	const [loading, setLoading] = useState(true);
 	const [adding, setAdding] = useState(false)
@@ -90,7 +90,7 @@ export function BookCard1({ book, club,setAdding1 }) {
 				showToast('error', errors.response.data.message)
 				setAdding(false);
 			})
-		
+
 	}
 
 	const property = {
@@ -180,7 +180,7 @@ export function BookCard2({ bookId, club }) {
 	const handleAdd = (e) => {
 		e.preventDefault()
 		setAdding(true);
-		const data = { 'club_id': club.id, 'book_id': bookId}
+		const data = { 'club_id': club.id, 'book_id': bookId }
 		const config = {
 			headers: { Authorization: `Bearer ${token}` },
 		};
@@ -208,7 +208,7 @@ export function BookCard2({ bookId, club }) {
 		}
 	}, [bookId, club])
 
-	const { description, covers, authors, title, subjects, revision } = book;
+	const { covers, title } = book;
 
 	return (
 		<>
@@ -247,6 +247,54 @@ export function BookCard2({ bookId, club }) {
 							Added
 						</Button>
 					}
+					<BookModal1 bookId={bookId} />
+				</ButtonGroup>
+			</Card>
+		</>
+	)
+}
+
+export function BookCard3({ bookId }) {
+	const [book, setBook] = useState({})
+	const [loading, setLoading] = useState(true);
+	const [adding, setAdding] = useState(false)
+	const [added, setAdded] = useState(false)
+	const toast = useToast();
+
+	const handleImageLoad = (e) => {
+		e.preventDefault()
+		setLoading(false);
+	};
+
+
+
+
+
+	useEffect(() => {
+		fetch(`https://openlibrary.org/works/${bookId}.json`)
+			.then(response => response.json())
+			.then(data => setBook(data));
+	}, [bookId])
+
+	const { covers, title } = book;
+
+	return (
+		<>
+
+			<Card rounded={'lg'} _hover={{ shadow: 'dark-lg', fontWeight: 'bold' }} variant={'elevated'}>
+				<img
+					src={covers && covers.length > 0 ? `http://covers.openlibrary.org/b/id/${covers[0]}-L.jpg` : "https://dummyimage.com/180x120/dbdbdb/787878.png&text=Image+cap"}
+					className="card-img-top"
+					alt="..."
+					style={{ height: '18rem', width: '100%', objectFit: 'cover', display: loading ? "none" : "block" }}
+					onLoad={handleImageLoad}
+					loading={loading ? "eager" : "lazy"} />
+
+				<div className="card-body row justify-content-center align-items-center p-3">
+					<div className="col-12 mb-3"><Heading size='md' color={'turquoise'}>{title}</Heading></div>
+					{/* <div className="lead col-12 ">{property.author}</div> */}
+				</div>
+				<ButtonGroup className="card-footer d-flex justify-content-center align-items-center p-3">
 					<BookModal1 bookId={bookId} />
 				</ButtonGroup>
 			</Card>

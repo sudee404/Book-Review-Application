@@ -17,6 +17,7 @@ const BookClubs = () => {
 	useEffect(() => {
 		getClubs(page)
 			.then(data => {
+				console.log(data)
 				setClubs(data.results)
 				setTotalResults(data.count)
 				setTotalPages(Math.ceil(data.count / perPage))
@@ -24,10 +25,7 @@ const BookClubs = () => {
 			.catch(errors => console.log(errors))
 	}, [page,perPage])
 
-	const filteredBookClubs = clubs.filter((bookClub) => {
-		return bookClub.name.toLowerCase().includes(search.toLowerCase());
-	});
-
+	
 	return (
 		<>
 			<div className="p-5 mb-4 bg-light rounded-3">
@@ -51,8 +49,8 @@ const BookClubs = () => {
 				</Box>
 				<div className="row row-cols-sm-1 row-cols-lg-3 justify-content-center align-items-center g-4 mx-0">
 
-					{filteredBookClubs.length > 0 ? (
-						filteredBookClubs.map((bookClub, idx) => (
+					{clubs && clubs.length > 0 ? (
+						clubs.map((bookClub, idx) => (
 							<ClubCard club={bookClub} key={idx} />
 						))
 					) : (

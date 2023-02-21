@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Book, BookReview, Author,BookClub
+from .models import Book, BookReview, Author,BookClub, UserBook
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
@@ -38,6 +38,13 @@ class BookReviewSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = BookReview
+        fields = ('__all__')
+
+
+class UserBookSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = UserBook
         fields = ('__all__')
 
 
