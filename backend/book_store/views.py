@@ -3,7 +3,6 @@ from .serializers import AuthorSerializer, BookReviewSerializer, BookSerializer,
 from django.contrib.auth import authenticate, logout, get_user_model
 from rest_framework import status, views, viewsets
 from rest_framework.parsers import MultiPartParser
-from rest_framework.permissions import IsAuthenticated
 from .serializers import LoginSerializer, UserSerializer
 from .models import Author, Book, BookReview, BookClub, UserBook
 from rest_framework.response import Response
