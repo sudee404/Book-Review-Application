@@ -6,6 +6,22 @@ User = get_user_model()
 
 # Create your models here.
 
+class UserProfile(models.Model):
+    """Model definition for UserProfile."""
+
+    user = models.OneToOneField(User, related_name='profile', on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='profile_pictures/')
+    bio = models.TextField()
+    
+    class Meta:
+        """Meta definition for UserProfile."""
+
+        verbose_name = 'UserProfile'
+        verbose_name_plural = 'UserProfiles'
+
+    def __str__(self):
+        """Unicode representation of UserProfile."""
+        return self.user
 
 class Book(models.Model):
     """Model definition for Book."""
@@ -108,3 +124,19 @@ class BookVote(models.Model):
     def get_votes(self):
         return self.voters.count()
 
+
+class Notification(models.Model):
+    """Model definition for Notification."""
+
+    recipient = models.ForeignKey(User, on_delete=models.CASCADE)
+    message = models.TextField()
+
+    class Meta:
+        """Meta definition for Notification."""
+
+        verbose_name = 'Notification'
+        verbose_name_plural = 'Notifications'
+
+    def __str__(self):
+        """Unicode representation of Notification."""
+        return f"{self.recipient} Notifications"

@@ -1,15 +1,18 @@
 from rest_framework import status
-from .serializers import AuthorSerializer, BookReviewSerializer, BookSerializer, BookClubSerializer, UserBookSerializer
+from .serializers import AuthorSerializer, BookReviewSerializer, BookSerializer, BookClubSerializer, NotificationSerializer, UserBookSerializer, UserDataSerializer
 from django.contrib.auth import authenticate, logout, get_user_model
 from rest_framework import status, views, viewsets
 from rest_framework.parsers import MultiPartParser
 from .serializers import LoginSerializer, UserSerializer
-from .models import Author, Book, BookReview, BookClub, UserBook
+from .models import Author, Book, BookReview, BookClub, Notification, UserBook, UserProfile
 from rest_framework.response import Response
 from django.conf import settings
 from jwt import encode as jwt_encode
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
+from . import models, serializers
 import jwt
 import datetime
+from rest_framework_simplejwt.tokens import RefreshToken
 
 User = get_user_model()
 
@@ -19,33 +22,26 @@ class LoginView(views.APIView):
 
     def post(self, request, *args, **kwargs):
         data = request.data
-        serializer = LoginSerializer(data=data)
+        serializer = self.serializer_class(data=data)
+
         if serializer.is_valid(raise_exception=True):
-            username = serializer.data['username']
-            password = serializer.data['password']
+            username = serializer.validated_data['username']
+            password = serializer.validated_data['password']
             user = authenticate(username=username, password=password)
-            if user:
-                # Generate JWT token
-                payload = {
-                    "id": user.id,
-                    "username": user.username,
-                }
 
-                # Get the JWT expiration delta from Django settings
-                jwt_expiration_delta = getattr(
-                    settings, "JWT_EXPIRATION_DELTA", None)
-                if not jwt_expiration_delta:
-                    raise AttributeError(
-                        "Invalid JWT expiration delta setting")
+            if user is not None:                   
+                refresh = RefreshToken.for_user(user)
+                token = str(refresh.access_token)
+                expiration = refresh.access_token.get('exp')
+                try:
+                    return Response({'user': UserDataSerializer(user).data, 'token': token, 'exp': expiration}, status=status.HTTP_202_ACCEPTED)
+                except User.profile.RelatedObjectDoesNotExist:
+                    # create user profile
+                    UserProfile.objects.create(user=user)
+                    return Response({'user': UserDataSerializer(user).data, 'token': token, 'exp': expiration}, status=status.HTTP_202_ACCEPTED)
 
-                payload["exp"] = datetime.datetime.utcnow() + \
-                    jwt_expiration_delta
-                token = jwt_encode(
-                    payload, settings.JWT_SECRET_KEY, settings.JWT_ALGORITHM
-                )
-
-                return Response({'message': 'Login successful', "token": token, 'userCred': payload})
-            return Response({"error": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': 'Invalid input, please enter correct values'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class LogoutView(views.APIView):
@@ -55,31 +51,11 @@ class LogoutView(views.APIView):
 
 
 class RegisterView(views.APIView):
-    def post(self, request, *args, **kwargs):
+    def post(self, request):
         serializer = UserSerializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
+        if serializer.is_valid():
             user = serializer.save()
-            # Generate JWT token
-            payload = {
-                "id": user.id,
-                "username": user.username,
-            }
-
-            # Get the JWT expiration delta from Django settings
-            jwt_expiration_delta = getattr(
-                settings, "JWT_EXPIRATION_DELTA", None)
-            if not jwt_expiration_delta:
-                raise AttributeError(
-                    "Invalid JWT expiration delta setting")
-
-            payload["exp"] = datetime.datetime.utcnow() + \
-                jwt_expiration_delta
-
-            token = jwt_encode(
-                payload, settings.JWT_SECRET_KEY, settings.JWT_ALGORITHM
-            )
-            return Response({'message': 'Registration successful', "token": token, 'userCred': payload}, status=status.HTTP_201_CREATED)
-
+            return Response({'message': 'Registration successful'}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -251,7 +227,6 @@ class BookClubViewSet(viewsets.ModelViewSet):
         paginator.page.number = 2
         return paginator.get_paginated_response([])
 
-
     def create(self, request, *args, **kwargs):
         # Get the token from the Authorization header
 
@@ -387,3 +362,19 @@ class AddBookView(views.APIView):
             return Response({'error': 'Invalid token'}, status=status.HTTP_401_UNAUTHORIZED)
         except IndexError:
             return Response({'error': 'No token found, Kindly log in'}, status=status.HTTP_307_TEMPORARY_REDIRECT)
+
+
+class NotificationViewSet(viewsets.ModelViewSet):
+    """This is the viewset that handles all actions at /notifications/ endpoint"""
+
+    queryset = Notification.objects.all()
+    serializer_class = NotificationSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+
+class UserProfileViewSet(viewsets.ModelViewSet):
+    """This is the viewset that handles all actions at /user-profiles/ endpoint"""
+
+    queryset = models.UserProfile.objects.all()
+    serializer_class = serializers.UserProfileSerializer
+    permission_classes = [IsAuthenticated]
