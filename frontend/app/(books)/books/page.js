@@ -1,12 +1,12 @@
 "use client";
-import { Divider, Grid, Pagination, alpha } from "@mui/material";
+import { Grid, Pagination, alpha } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import BookCard, { BookCardPlaceHolder } from "../../../components/BookCard";
+import BookCard, { BookCardPlaceHolder } from "../../../components/book/BookCard";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useState } from "react";
