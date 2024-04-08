@@ -30,6 +30,7 @@ const BookDetails = ({ bookId }) => {
 		});
 		setRating(total / reviews.length)
 	}
+	
 	function handleClose() {
 		setLoadingReview(true)
 		getReviews(bookId)
