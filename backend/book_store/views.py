@@ -71,18 +71,14 @@ class BookReviewViewSet(viewsets.ModelViewSet):
     queryset = BookReview.objects.all().order_by('created_at')
     serializer_class = BookReviewSerializer
     authentication_classes = ()
-    permission_classes = ()
-
-    def list(self, request, *args, **kwargs):
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    
+    def get_queryset(self):
         queryset = super().get_queryset()
-        # Get book id to filter reviews
-        book_id = request.query_params.get('book', None)
-        if book_id is not None:
-            queryset = queryset.filter(book_id=book_id)
-
-        serializer = self.serializer_class(
-            queryset, many=True, context={'request': request})
-        return Response(serializer.data)
+        if self.action == 'list':
+            if book_id:=self.request.query_params.get('book', None):
+                queryset = queryset.filter(book_id=book_id)
+        return queryset
 
     def create(self, request, *args, **kwargs):
         # Get the token from the Authorization header
