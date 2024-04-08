@@ -6,13 +6,15 @@ User = get_user_model()
 
 # Create your models here.
 
+
 class UserProfile(models.Model):
     """Model definition for UserProfile."""
 
-    user = models.OneToOneField(User, related_name='profile', on_delete=models.CASCADE)
+    user = models.OneToOneField(
+        User, related_name='profile', on_delete=models.CASCADE)
     image = models.ImageField(upload_to='profile_pictures/')
     bio = models.TextField()
-    
+
     class Meta:
         """Meta definition for UserProfile."""
 
@@ -22,6 +24,7 @@ class UserProfile(models.Model):
     def __str__(self):
         """Unicode representation of UserProfile."""
         return self.user
+
 
 class Book(models.Model):
     """Model definition for Book."""
@@ -61,7 +64,7 @@ class BookReview(models.Model):
         "Book", to_field="identifier", on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     review = models.TextField()
-    rating = models.PositiveSmallIntegerField()
+    rating = models.DecimalField(decimal_places=1, max_digits=2)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -81,7 +84,6 @@ class BookClub(models.Model):
     name = models.CharField(max_length=250)
     description = models.TextField()
     members = models.ManyToManyField(User, related_name='book_clubs')
-    books = models.ManyToManyField(Book, related_name='book_clubs')
     created_at = models.DateTimeField(auto_now_add=True)
     poster = models.ImageField(upload_to='poster/', default='default.png')
     owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
@@ -106,14 +108,38 @@ class UserBook(models.Model):
         PLANNING_TO_READ = 'PR', _('Planning to Read')
         ALREADY_READ = 'AR', _('Already Read')
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_books')
-    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='user_books')
-    status = models.CharField(max_length=2, choices=StatusChoices.choices, default=StatusChoices.PLANNING_TO_READ)
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='user_books')
+    book = models.ForeignKey(
+        Book, on_delete=models.CASCADE, related_name='user_books')
+    status = models.CharField(
+        max_length=2, choices=StatusChoices.choices, default=StatusChoices.PLANNING_TO_READ)
     started_reading_at = models.DateTimeField(null=True, blank=True)
     finished_reading_at = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         unique_together = ('user', 'book')
+
+
+class ClubBook(models.Model):
+    """Model definition for ClubBook."""
+
+    class StatusChoices(models.TextChoices):
+        CURRENTLY_READING = 'CR', _('Currently Reading')
+        PLANNING_TO_READ = 'PR', _('Planning to Read')
+        ALREADY_READ = 'AR', _('Already Read')
+
+    club = models.ForeignKey(
+        BookClub, on_delete=models.CASCADE, related_name='books')
+    book = models.ForeignKey(
+        Book, on_delete=models.CASCADE, related_name='clubs')
+    status = models.CharField(
+        max_length=2, choices=StatusChoices.choices, default=StatusChoices.PLANNING_TO_READ)
+    started_reading_at = models.DateTimeField(null=True, blank=True)
+    finished_reading_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        unique_together = ('club', 'book')
 
 
 class BookVote(models.Model):

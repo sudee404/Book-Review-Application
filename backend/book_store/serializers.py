@@ -58,12 +58,19 @@ class BookSerializer(serializers.ModelSerializer):
 
 
 class BookReviewSerializer(serializers.ModelSerializer):
+    user = UserDataSerializer()
 
     class Meta:
         model = BookReview
         fields = ('__all__')
 
 
+class CreateBookReviewSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = BookReview
+        fields = ('rating','review')
+        
 class UserBookSerializer(serializers.ModelSerializer):
 
     class Meta:

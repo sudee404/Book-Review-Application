@@ -27,4 +27,4 @@ class BookClubAdmin(admin.ModelAdmin):
     ordering = ('-created_at',)
     list_filter = ('owner',)
 
-    filter_horizontal = ('members', 'books')
+    filter_horizontal = ('members',)
