@@ -70,7 +70,6 @@ class BookReviewViewSet(viewsets.ModelViewSet):
     """This is the viewset that handles all actions at /reviews endpoint"""
     queryset = BookReview.objects.all().order_by('created_at')
     serializer_class = BookReviewSerializer
-    authentication_classes = ()
     permission_classes = [IsAuthenticatedOrReadOnly]
     
     def get_queryset(self):
@@ -79,38 +78,21 @@ class BookReviewViewSet(viewsets.ModelViewSet):
             if book_id:=self.request.query_params.get('book', None):
                 queryset = queryset.filter(book_id=book_id)
         return queryset
+    
+    def get_serializer_class(self):
+        if self.action == 'create':
+            return serializers.CreateBookReviewSerializer
+        return super().get_serializer_class()
+    
+    def perform_create(self, serializer):
+        # read data
+        book_id = self.request.data.get('book')
+        book,created = Book.objects.get_or_create(identifier=book_id)
+        # pass book and user to serializer
+        serializer.save(book=book, user=self.request.user)
+        
+        return super().perform_create(serializer)
 
-    def create(self, request, *args, **kwargs):
-        # Get the token from the Authorization header
-
-        try:
-            token = request.META.get('HTTP_AUTHORIZATION', '').split(' ')[1]
-
-            # Decode the token
-            payload = jwt.decode(
-                token, settings.JWT_SECRET_KEY, settings.JWT_ALGORITHM)
-
-            # Set the user to the current authenticated user
-            user = User.objects.get(username=payload['username'])
-            # Create or get book
-            book = Book.objects.get_or_create(
-                identifier=f"{request.data['key']}")[0]
-            # Create review
-            review = BookReview.objects.create(
-                book=book, user=user, review=request.data['review'], rating=request.data['rating'])
-            review.save()
-            return Response({'message': 'Review added successfully'}, status=status.HTTP_201_CREATED)
-
-        except jwt.ExpiredSignatureError:
-            return Response({'error': 'Token expired'}, status=status.HTTP_401_UNAUTHORIZED)
-
-        except jwt.InvalidSignatureError:
-            return Response({'error': 'Invalid token signature'}, status=status.HTTP_401_UNAUTHORIZED)
-
-        except jwt.DecodeError:
-            return Response({'error': 'Invalid token'}, status=status.HTTP_401_UNAUTHORIZED)
-        except IndexError:
-            return Response({'error': 'No token found, Kindly log in'}, status=status.HTTP_307_TEMPORARY_REDIRECT)
 
 
 class UserBookViewSet(viewsets.ModelViewSet):
