@@ -15,10 +15,11 @@ import ToggleColorMode from "./ToggleColorMode";
 import { signIn, useSession } from "next-auth/react";
 import BadgeAvatars from "./Dots";
 import AccountMenu from "./Dots";
+import Link from "next/link";
 
 const logoStyle = {
-	width: "140px",
-	height: "auto",
+	width: "auto",
+	height: "40px",
 	cursor: "pointer",
 };
 
@@ -88,40 +89,25 @@ function AppAppBar({ mode, toggleColorMode }) {
 							}}
 						>
 							<img
-								src={
-									"https://assets-global.website-files.com/61ed56ae9da9fd7e0ef0a967/61f12e6faf73568658154dae_SitemarkDefault.svg"
-								}
+								src={"/assets/images/books/img1.png"}
 								style={logoStyle}
 								alt="logo of sitemark"
 							/>
+
 							<Box sx={{ display: { xs: "none", md: "flex" } }}>
 								<MenuItem
-									onClick={() => scrollToSection("features")}
+									as={Link}
+									href="/"
 									sx={{ py: "6px", px: "12px" }}
 								>
-									<Typography
-										variant="body2"
-										color="text.primary"
-									>
-										About
+									<Typography fontWeight={"bold"}>
+										ReadUp
 									</Typography>
 								</MenuItem>
 
 								<MenuItem
-									onClick={() =>
-										scrollToSection("highlights")
-									}
-									sx={{ py: "6px", px: "12px" }}
-								>
-									<Typography
-										variant="body2"
-										color="text.primary"
-									>
-										Notifications
-									</Typography>
-								</MenuItem>
-								<MenuItem
-									onClick={() => scrollToSection("pricing")}
+									as={Link}
+									href="/books"
 									sx={{ py: "6px", px: "12px" }}
 								>
 									<Typography
@@ -132,7 +118,8 @@ function AppAppBar({ mode, toggleColorMode }) {
 									</Typography>
 								</MenuItem>
 								<MenuItem
-									onClick={() => scrollToSection("faq")}
+									as={Link}
+									href="/book-clubs"
 									sx={{ py: "6px", px: "12px" }}
 								>
 									<Typography
@@ -142,19 +129,34 @@ function AppAppBar({ mode, toggleColorMode }) {
 										Book Clubs
 									</Typography>
 								</MenuItem>
-								<MenuItem
-									onClick={() =>
-										scrollToSection("testimonials")
-									}
-									sx={{ py: "6px", px: "12px" }}
-								>
-									<Typography
-										variant="body2"
-										color="text.primary"
-									>
-										My Books
-									</Typography>
-								</MenuItem>
+								{status === "authenticated" && (
+									<>
+										<MenuItem
+											as={Link}
+											href="/my-books"
+											sx={{ py: "6px", px: "12px" }}
+										>
+											<Typography
+												variant="body2"
+												color="text.primary"
+											>
+												My Books
+											</Typography>
+										</MenuItem>
+										<MenuItem
+											as={Link}
+											href="/notifications"
+											sx={{ py: "6px", px: "12px" }}
+										>
+											<Typography
+												variant="body2"
+												color="text.primary"
+											>
+												Notifications
+											</Typography>
+										</MenuItem>
+									</>
+								)}
 							</Box>
 						</Box>
 						<Box
