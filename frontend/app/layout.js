@@ -3,24 +3,17 @@ import * as React from "react";
 import CssBaseline from "@mui/material/CssBaseline";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import getLPTheme from "../themes/getLPTheme";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ColorModeContext } from "../context/context";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { SessionProvider } from "next-auth/react";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
+import Providers from "./providers";
 
 export default function RootLayout({ children }) {
 	const [mode, setMode] = React.useState("light");
 
-	const queryClient = new QueryClient({
-		defaultOptions: {
-			queries: {
-				staleTime: 1000 * 60 * 60 * 24,
-				retry: 0,
-			},
-		},
-	});
+
 	React.useEffect(() => {
 		if (typeof window !== "undefined") {
 			const themeMode = localStorage.getItem("themeMode");
@@ -51,12 +44,7 @@ export default function RootLayout({ children }) {
 						<ThemeProvider theme={theme}>
 							<CssBaseline />
 							<SessionProvider>
-								<QueryClientProvider
-									client={queryClient}
-									contextSharing={true}
-								>
-									{children}
-								</QueryClientProvider>
+								<Providers>{children}</Providers>
 							</SessionProvider>
 						</ThemeProvider>
 					</ColorModeContext.Provider>

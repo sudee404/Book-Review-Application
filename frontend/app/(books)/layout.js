@@ -2,7 +2,7 @@
 import * as React from "react";
 import AppAppBar from "../../components/AppAppBar";
 import { ColorModeContext } from "../../context/context";
-import { useTheme } from "@mui/material";
+import { Divider, useTheme } from "@mui/material";
 import Footer from "../../components/Footer";
 
 export default function HomeLayout({ children }) {
@@ -16,7 +16,8 @@ export default function HomeLayout({ children }) {
 				toggleColorMode={colorMode.toggleColorMode}
 			/>
 			{children}
-			<Footer/>
+			<Divider />
+			<Footer />
 		</div>
 	);
 }
