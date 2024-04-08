@@ -9,8 +9,6 @@ const AuthorDetails = ({ authorId }) => {
 		fetch(`https://openlibrary.org/authors/${authorId}.json`)
 			.then(response => response.json())
 			.then(data => setAuthor(data));
-
-
 	}, [authorId]);
 
 	if (!author) {
