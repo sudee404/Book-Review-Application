@@ -10,6 +10,7 @@ import { SessionProvider } from "next-auth/react";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
 import Providers from "./providers";
 
+
 export default function RootLayout({ children }) {
 	const [mode, setMode] = React.useState("light");
 
@@ -38,6 +39,20 @@ export default function RootLayout({ children }) {
 
 	return (
 		<html lang="en">
+			<head>
+				{/* meta tags */}
+				<meta charSet="utf-8" />
+				<meta
+					name="viewport"
+					content="initial-scale=1, width=device-width"
+				/>
+				<link
+					rel="icon"
+					href="/assets/images/books/img1.png"
+					sizes="any"
+				/>
+				<title>Readup</title>
+			</head>
 			<body>
 				<AppRouterCacheProvider>
 					<ColorModeContext.Provider value={colorMode}>

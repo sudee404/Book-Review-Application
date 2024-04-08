@@ -1,9 +1,9 @@
 "use client";
 import * as React from "react";
-import AppAppBar from "../../components/AppAppBar";
+import AppAppBar from "../../components/utils/AppAppBar";
 import { ColorModeContext } from "../../context/context";
 import { Divider, useTheme } from "@mui/material";
-import Footer from "../../components/Footer";
+import Footer from "../../components/sections/Footer";
 
 export default function HomeLayout({ children }) {
 	const theme = useTheme();
