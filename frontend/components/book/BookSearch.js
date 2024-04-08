@@ -24,7 +24,6 @@ export default function BookSearch() {
 		},
 		{ enabled: Boolean(keyword) }
 	);
-	console.log(data);
 
 	return (
 		<Box

@@ -21,7 +21,7 @@ function Copyright() {
 	return (
 		<Typography variant="body2" color="text.secondary" mt={1}>
 			{"Copyright © "}
-			<Link href="https://mui.com/">Sitemark&nbsp;</Link>
+			<Link href="/">ReadUp &nbsp;</Link>
 			{new Date().getFullYear()}
 		</Typography>
 	);
@@ -56,15 +56,6 @@ export default function Footer() {
 					}}
 				>
 					<Box sx={{ width: { xs: "100%", sm: "60%" } }}>
-						<Box sx={{ ml: "-15px" }}>
-							<img
-								src={
-									"https://assets-global.website-files.com/61ed56ae9da9fd7e0ef0a967/61f12e6faf73568658154dae_SitemarkDefault.svg"
-								}
-								style={logoStyle}
-								alt="logo of sitemark"
-							/>
-						</Box>
 						<Typography
 							variant="body2"
 							fontWeight={600}
@@ -110,23 +101,19 @@ export default function Footer() {
 						gap: 1,
 					}}
 				>
-					<Typography variant="body2" fontWeight={600}>
-						Product
+					<Typography
+						component={Link}
+						href="/find-book"
+						variant="body2"
+						fontWeight={600}
+					>
+						Find a Book
 					</Typography>
-					<Link color="text.secondary" href="#">
-						Features
+					<Link color="text.secondary" href="/find-book">
+						By Title
 					</Link>
-					<Link color="text.secondary" href="#">
-						Testimonials
-					</Link>
-					<Link color="text.secondary" href="#">
-						Highlights
-					</Link>
-					<Link color="text.secondary" href="#">
-						Pricing
-					</Link>
-					<Link color="text.secondary" href="#">
-						FAQs
+					<Link color="text.secondary" href="/find-book">
+						By Author
 					</Link>
 				</Box>
 				<Box
@@ -136,39 +123,25 @@ export default function Footer() {
 						gap: 1,
 					}}
 				>
-					<Typography variant="body2" fontWeight={600}>
-						Company
+					<Typography
+						component={Link}
+						href="/book-clubs"
+						variant="body2"
+						fontWeight={600}
+					>
+						Book Clubs
 					</Typography>
-					<Link color="text.secondary" href="#">
-						About us
+					<Link color="text.secondary" href="/book-clubs/about">
+						About Book Clubs
 					</Link>
-					<Link color="text.secondary" href="#">
-						Careers
+					<Link color="text.secondary" href="/book-clubs/new">
+						Start One
 					</Link>
-					<Link color="text.secondary" href="#">
-						Press
+					<Link color="text.secondary" href="/book-clubs">
+						Join One
 					</Link>
 				</Box>
-				<Box
-					sx={{
-						display: { xs: "none", sm: "flex" },
-						flexDirection: "column",
-						gap: 1,
-					}}
-				>
-					<Typography variant="body2" fontWeight={600}>
-						Legal
-					</Typography>
-					<Link color="text.secondary" href="#">
-						Terms
-					</Link>
-					<Link color="text.secondary" href="#">
-						Privacy
-					</Link>
-					<Link color="text.secondary" href="#">
-						Contact
-					</Link>
-				</Box>
+				
 			</Box>
 			<Box
 				sx={{

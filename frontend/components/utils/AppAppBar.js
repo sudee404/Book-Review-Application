@@ -13,7 +13,6 @@ import Drawer from "@mui/material/Drawer";
 import MenuIcon from "@mui/icons-material/Menu";
 import ToggleColorMode from "./ToggleColorMode";
 import { signIn, useSession } from "next-auth/react";
-import BadgeAvatars from "./Dots";
 import AccountMenu from "./Dots";
 import Link from "next/link";
 
@@ -21,6 +20,11 @@ const logoStyle = {
 	width: "auto",
 	height: "40px",
 	cursor: "pointer",
+};
+
+export const metadata = {
+	title: "Readup",
+	description: "Readup is a platform for book lovers to connect and share their love for books.",
 };
 
 function AppAppBar({ mode, toggleColorMode }) {
@@ -96,7 +100,7 @@ function AppAppBar({ mode, toggleColorMode }) {
 
 							<Box sx={{ display: { xs: "none", md: "flex" } }}>
 								<MenuItem
-									as={Link}
+									// as={Link}
 									href="/"
 									sx={{ py: "6px", px: "12px" }}
 								>
@@ -231,38 +235,26 @@ function AppAppBar({ mode, toggleColorMode }) {
 										/>
 									</Box>
 									<MenuItem
-										onClick={() =>
-											scrollToSection("features")
-										}
+										
 									>
-										Features
+										Find Book
 									</MenuItem>
 									<MenuItem
-										onClick={() =>
-											scrollToSection("testimonials")
-										}
+										
 									>
-										Testimonials
+										Book Clubs
 									</MenuItem>
 									<MenuItem
-										onClick={() =>
-											scrollToSection("highlights")
-										}
+										
 									>
-										Highlights
+										My Books
 									</MenuItem>
 									<MenuItem
-										onClick={() =>
-											scrollToSection("pricing")
-										}
+										
 									>
-										Pricing
+										Notifications
 									</MenuItem>
-									<MenuItem
-										onClick={() => scrollToSection("faq")}
-									>
-										FAQ
-									</MenuItem>
+									
 									<Divider />
 									<MenuItem>
 										<Button

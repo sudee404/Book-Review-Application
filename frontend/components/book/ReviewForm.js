@@ -31,10 +31,12 @@ export default function ReviewForm({ bookId, onClose = () => {} }) {
 			.post("/api/reviews", formData)
 			.then((response) => {
 				toast.success("Review submitted successfully");
+				onClose()
 				handleClose();
 			})
 			.catch((errors) => {
 				console.log(errors);
+				toast.error("Error submitting review");	
 			});
 	};
 
@@ -94,11 +96,18 @@ export default function ReviewForm({ bookId, onClose = () => {} }) {
 								rating: e.target.value,
 							}));
 						}}
+						sx={{
+							mt: 2,
+						}}
 					/>{" "}
 				</DialogContent>
 				<DialogActions>
-					<Button onClick={handleClose}>Cancel</Button>
-					<Button type="submit">Submit</Button>
+					<Button variant="contained" color='error' onClick={handleClose}>
+						Cancel
+					</Button>
+					<Button variant="contained" color='success' type="submit">
+						Submit
+					</Button>
 				</DialogActions>
 			</Dialog>
 		</React.Fragment>
