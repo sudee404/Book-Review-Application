@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Book, Author, BookReview, BookClub
+from .models import Book, Author, BookReview, BookClub, ClubBook
 
 
 @admin.register(Book)
@@ -28,3 +28,5 @@ class BookClubAdmin(admin.ModelAdmin):
     list_filter = ('owner',)
 
     filter_horizontal = ('members',)
+
+admin.site.register(ClubBook)

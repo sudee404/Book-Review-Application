@@ -34,7 +34,7 @@ class UserDataSerializer(serializers.ModelSerializer):
         """Meta definition for UserDataSerializer."""
 
         model = models.User
-        fields = ('username', 'email', 'fullname', 'image', 'bio')
+        fields = ('id','username', 'email', 'fullname', 'image', 'bio')
 
     def get_fullname(self, obj):
         return f"{obj.first_name} {obj.last_name}"
@@ -91,13 +91,28 @@ class CreateBookClubSerializer(serializers.ModelSerializer):
         model = BookClub
         exclude = ('owner','members')
         
+class ClubBookSerializer(serializers.ModelSerializer):
+    """Serializer definition for ClubBook."""
+    book = BookSerializer()
+
+    class Meta:
+        """Meta definition for ClubBookSerializer."""
+
+        model = models.ClubBook
+        fields = ('__all__')
+
+        
 class BookClubSerializer(serializers.ModelSerializer):
     owner = UserDataSerializer()
     members = UserDataSerializer(many=True)
+    books = serializers.SerializerMethodField()
 
     class Meta:
         model = BookClub
         fields = ('__all__')
+        
+    def get_books(self, obj):
+        return ClubBookSerializer(obj.books, many=True).data
 
 
 class NotificationSerializer(serializers.ModelSerializer):
