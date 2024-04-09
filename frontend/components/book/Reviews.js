@@ -119,11 +119,12 @@ export default function BookReviews({ bookId }) {
 					))}
 				</Grid>
 			) : results?.length ? (
-				<Box>
+				<Box minWidth={'80%'}>
 					<Box
 						display={"flex"}
 						justifyContent={"space-between"}
-						m={2}
+							m={2}
+							
 					>
 						<Typography alignSelf={"center"}>
 							{count} reviews found
