@@ -2,13 +2,10 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
-import Highlights from "../../../../components/sections/Highlights";
-import Pricing from "../../../../components/sections/Pricing";
 import BookDetails from "../../../../components/book/BookDetails";
 import BookReviews from "../../../../components/book/Reviews";
-import FAQ from "../../../../components/sections/FAQ";
 import { useQuery } from "@tanstack/react-query";
-import AddToList from "../../../../components/book/AddToList";
+import AddToClub from "../../../../components/clubs/AddToClub";
 
 export default function Page({ params }) {
 	const { id } = params;
@@ -30,7 +27,7 @@ export default function Page({ params }) {
 			<Divider />
 			<BookReviews bookId={id} />
 			<Divider />
-			<AddToList />
+			<AddToClub bookId={id} />
 			<Divider />
 		</Box>
 	);

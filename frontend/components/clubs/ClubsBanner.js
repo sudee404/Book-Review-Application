@@ -7,8 +7,14 @@ import Link from "@mui/material/Link";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
+import JoinDialog from "./JoinDialog";
 
-export default function ClubBanner({ club }) {
+export default function ClubBanner({
+	club,
+	isOwner,
+	isMember,
+	onSuccess = () => {},
+}) {
 	return (
 		<Box
 			id="hero"
@@ -70,19 +76,21 @@ export default function ClubBanner({ club }) {
 					>
 						{club?.description}
 					</Typography>
-					<Stack
-						direction={{ xs: "column", sm: "row" }}
-						alignSelf="center"
-						spacing={1}
-						useFlexGap
-						sx={{ pt: 2, width: { xs: "100%", sm: "auto" } }}
-					>
-						
-						<Button variant="contained" color="primary">
-							Join Club
-						</Button>
-					</Stack>
-					
+					{!(isOwner || isMember) && (
+						<Stack
+							direction={{ xs: "column", sm: "row" }}
+							alignSelf="center"
+							spacing={1}
+							useFlexGap
+							sx={{ pt: 2, width: { xs: "100%", sm: "auto" } }}
+						>
+							<JoinDialog
+								name={club?.name}
+								id={club?.id}
+								onSuccess={onSuccess}
+							/>
+						</Stack>
+					)}
 				</Stack>
 				<Box
 					id="image"
