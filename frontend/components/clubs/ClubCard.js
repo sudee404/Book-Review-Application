@@ -5,19 +5,105 @@ import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import { Box, Grid, Skeleton } from "@mui/material";
-// calendar icon
+import { Box, Skeleton } from "@mui/material";
 import EventIcon from "@mui/icons-material/Event";
-// person icon
 import PersonIcon from "@mui/icons-material/Person";
-// owner icon
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-// book icon
 import MenuBookIcon from "@mui/icons-material/MenuBook";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
+import JoinDialog from "./JoinDialog";
+import { useSession } from "next-auth/react";
 
-export default function ClubCard({ club }) {
+export default function ClubCard({ club, onSuccess = () => {} }) {
+	const router = useRouter();
+	const { data: session } = useSession();
+
+	const isMember = React.useMemo(() => {
+		if (!session?.user) return false;
+		return (
+			club?.members?.find((member) => member.id === session.user.id) ||
+			club?.owner?.username === session.user.username
+		);
+	}, [club, session]);
+
+	return (
+		<Card>
+			<CardMedia
+				sx={{ height: 250 }}
+				image={club?.poster}
+				title="club poster"
+			/>
+			<CardContent>
+				<Typography gutterBottom variant="h5" component="div">
+					{club?.name}
+				</Typography>
+
+				<Box
+					display={"flex"}
+					gap={2}
+					mt={1}
+					justifyContent={"space-between"}
+				>
+					<Box display={"flex"} gap={1}>
+						<EventIcon fontSize="small" />{" "}
+						<Typography variant="body2" color="text.blue">
+							{new Date(club?.created_at).toDateString()}
+						</Typography>
+					</Box>
+
+					<Box display={"flex"} gap={1}>
+						<PersonIcon fontSize="small" />{" "}
+						<Typography variant="body2" color="text.blue">
+							{club?.members?.length}
+						</Typography>
+					</Box>
+				</Box>
+
+				<Box
+					display={"flex"}
+					gap={2}
+					mt={1}
+					justifyContent={"space-between"}
+				>
+					<Box display={"flex"} gap={1}>
+						<AccountCircleIcon fontSize="small" />{" "}
+						<Typography variant="body2" color="text.blue">
+							{club?.owner?.username}
+						</Typography>
+					</Box>
+
+					<Box display={"flex"} gap={1}>
+						<MenuBookIcon fontSize="small" />{" "}
+						<Typography variant="body2" color="text.blue">
+							{club?.books?.length}
+						</Typography>
+					</Box>
+				</Box>
+			</CardContent>
+			<CardActions
+				sx={{ display: "flex", justifyContent: "space-between" }}
+			>
+				<Button
+					size="small"
+					variant="outlined"
+					onClick={() => {
+						router.push(`/book-clubs/${club?.id}`);
+					}}
+				>
+					Check Out
+				</Button>
+				<JoinDialog
+					name={club?.name}
+					id={club?.id}
+					onSuccess={onSuccess}
+					isMember={isMember}
+				/>
+			</CardActions>
+		</Card>
+	);
+}
+
+export function ClubCard2({ club, handleAdd = () => {} }) {
 	const router = useRouter();
 
 	return (
@@ -48,7 +134,7 @@ export default function ClubCard({ club }) {
 					<Box display={"flex"} gap={1}>
 						<PersonIcon fontSize="small" />{" "}
 						<Typography variant="body2" color="text.blue">
-							10
+							{club?.members?.length}
 						</Typography>
 					</Box>
 				</Box>
@@ -69,7 +155,7 @@ export default function ClubCard({ club }) {
 					<Box display={"flex"} gap={1}>
 						<MenuBookIcon fontSize="small" />{" "}
 						<Typography variant="body2" color="text.blue">
-							5
+							{club?.books?.length}
 						</Typography>
 					</Box>
 				</Box>
@@ -81,7 +167,7 @@ export default function ClubCard({ club }) {
 					size="small"
 					variant="outlined"
 					onClick={() => {
-						router.push(`/books/${club?.id}`);
+						router.push(`/book-clubs/${club?.id}`);
 					}}
 				>
 					Check Out
@@ -89,12 +175,11 @@ export default function ClubCard({ club }) {
 				<Button
 					size="small"
 					variant="contained"
-					color="success"
 					onClick={() => {
-						router.push(`/books/${club?.id}`);
+						handleAdd(club?.id);
 					}}
 				>
-					Join Club
+					Add Book
 				</Button>
 			</CardActions>
 		</Card>
@@ -110,7 +195,9 @@ export function ClubCardPlaceHolder() {
 				<Skeleton variant="text" />
 				<Skeleton variant="text" />
 			</CardContent>
-			<CardActions sx={{ display: "flex" ,justifyContent:'space-between'}}>
+			<CardActions
+				sx={{ display: "flex", justifyContent: "space-between" }}
+			>
 				<Skeleton
 					variant="text"
 					width={90}
