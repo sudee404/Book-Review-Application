@@ -9,6 +9,7 @@ router.register(r'reviews', BookReviewViewSet)
 router.register(r'user_books', UserBookViewSet)
 router.register(r'users', UserViewSet)
 router.register(r'clubs', BookClubViewSet)
+router.register(r'notifications', NotificationViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),

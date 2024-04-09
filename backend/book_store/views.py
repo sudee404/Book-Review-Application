@@ -2,16 +2,17 @@ from rest_framework import status
 from .serializers import AuthorSerializer, BookReviewSerializer, BookSerializer, BookClubSerializer, NotificationSerializer, UserBookSerializer, UserDataSerializer
 from django.contrib.auth import authenticate, logout, get_user_model
 from rest_framework import status, views, viewsets
-from rest_framework.parsers import MultiPartParser,FormParser
+from rest_framework.parsers import MultiPartParser, FormParser
 from .serializers import LoginSerializer, UserSerializer
-from .models import Author, Book, BookReview, BookClub, Notification, UserBook, UserProfile
+from .models import Author, Book, BookReview, BookClub, ClubBook, Notification, UserBook, UserProfile
 from rest_framework.response import Response
 from django.conf import settings
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from . import models, serializers
 import jwt
-import datetime
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.decorators import action
+from django.db.models import Q
 
 User = get_user_model()
 
@@ -28,7 +29,7 @@ class LoginView(views.APIView):
             password = serializer.validated_data['password']
             user = authenticate(username=username, password=password)
 
-            if user is not None:                   
+            if user is not None:
                 refresh = RefreshToken.for_user(user)
                 token = str(refresh.access_token)
                 expiration = refresh.access_token.get('exp')
@@ -70,28 +71,27 @@ class BookReviewViewSet(viewsets.ModelViewSet):
     queryset = BookReview.objects.all().order_by('created_at')
     serializer_class = BookReviewSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
-    
+
     def get_queryset(self):
         queryset = super().get_queryset()
         if self.action == 'list':
-            if book_id:=self.request.query_params.get('book', None):
+            if book_id := self.request.query_params.get('book', None):
                 queryset = queryset.filter(book_id=book_id)
         return queryset
-    
+
     def get_serializer_class(self):
         if self.action == 'create':
             return serializers.CreateBookReviewSerializer
         return super().get_serializer_class()
-    
+
     def perform_create(self, serializer):
         # read data
         book_id = self.request.data.get('book')
-        book,created = Book.objects.get_or_create(identifier=book_id)
+        book, created = Book.objects.get_or_create(identifier=book_id)
         # pass book and user to serializer
         serializer.save(book=book, user=self.request.user)
-        
-        return super().perform_create(serializer)
 
+        return super().perform_create(serializer)
 
 
 class UserBookViewSet(viewsets.ModelViewSet):
@@ -182,18 +182,75 @@ class BookClubViewSet(viewsets.ModelViewSet):
     serializer_class = BookClubSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
     parser_classes = [MultiPartParser, FormParser]
-    
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        if self.action == 'list':
+            if user_id := self.request.query_params.get('user', None):
+                queryset = queryset.filter(
+                    Q(owner_id=user_id) | Q(members__id=user_id))
+        return queryset
+
     def get_serializer_class(self):
         if self.action == 'create':
             return serializers.CreateBookClubSerializer
         return super().get_serializer_class()
-    
+
     def perform_create(self, serializer):
         # pass user to serializer
         serializer.save(owner=self.request.user)
         return super().perform_create(serializer)
 
+    @action(detail=True, methods=['get'])
+    def join(self, request, pk=None):
+        club = self.get_object()
+        # check if user is a member or owner
+        if request.user in club.members.all() or request.user == club.owner:
+            return Response({'message': 'Already a member'}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            club.members.add(request.user)
+            return Response({'message': 'Joined successfully'}, status=status.HTTP_200_OK)
 
+    @action(detail=True, methods=['get'])
+    def leave(self, request, pk=None):
+        club = self.get_object()
+        # check if user is a member or owner
+        if request.user in club.members.all():
+            club.members.remove(request.user)
+            return Response({'message': 'You have left the group successfully'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'message': 'You are not a member'}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=['get'])
+    def add(self, request, pk=None):
+        try:
+            club = self.get_object()
+            # get book
+            book_id = self.request.query_params.get('book',None)
+            book, _ = Book.objects.get_or_create(identifier=book_id)
+            # create club book instance
+            book_instance, created = ClubBook.objects.get_or_create(
+                club=club, book=book)
+            return Response({'message': 'Book added successfully'}, status=status.HTTP_200_OK)
+        except Exception as e:
+            print(e)
+            return Response({'message': 'Book already added'}, status=status.HTTP_400_BAD_REQUEST)
+        
+    @action(detail=True, methods=['get'])
+    def remove(self, request, pk=None):
+        try:
+            club = self.get_object()
+            # get book
+            book_id = self.request.query_params.get('book')
+            book, _ = Book.objects.get_or_create(identifier=book_id)
+            # create club book instance
+            book_instance = ClubBook.objects.get(
+                club=club, book=book)
+            book_instance.delete()
+            return Response({'message': 'Book removed successfully'}, status=status.HTTP_200_OK)
+        except Exception as e:
+            print(e)
+            return Response({'message': 'Book not found'}, status=status.HTTP_400_BAD_REQUEST)
 
 class ClubMembersView(views.APIView):
 
