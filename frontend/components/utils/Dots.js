@@ -11,10 +11,16 @@ import Settings from "@mui/icons-material/Settings";
 import UserIcon from "@mui/icons-material/AccountCircle";
 import Logout from "@mui/icons-material/Logout";
 import { signOut, useSession } from "next-auth/react";
+import { Badge } from "@mui/material";
+import MailIcon from "@mui/icons-material/Mail";
+import { NotificationContext } from "../../context/NotificationContext";
+import { useRouter } from "next/navigation";
 
 export default function AccountMenu() {
 	const [anchorEl, setAnchorEl] = React.useState(null);
-	const {data:session} = useSession()
+	const { notificationCount } = React.useContext(NotificationContext);
+	const { data: session } = useSession();
+	const router = useRouter();
 	const open = Boolean(anchorEl);
 	const handleClick = (event) => {
 		setAnchorEl(event.currentTarget);
@@ -31,6 +37,18 @@ export default function AccountMenu() {
 					textAlign: "center",
 				}}
 			>
+				<IconButton
+					onClick={() => router.push("/notifications")}
+					size="small"
+					sx={{ ml: 2 }}
+					aria-controls={open ? "account-menu" : undefined}
+					aria-haspopup="true"
+					aria-expanded={open ? "true" : undefined}
+				>
+					<Badge color="secondary" badgeContent={notificationCount}>
+						<MailIcon />
+					</Badge>
+				</IconButton>
 				<Tooltip title="Account settings">
 					<IconButton
 						onClick={handleClick}
@@ -40,7 +58,11 @@ export default function AccountMenu() {
 						aria-haspopup="true"
 						aria-expanded={open ? "true" : undefined}
 					>
-						<Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
+						<Avatar sx={{ width: 32, height: 32 }}>
+							{`${session?.user?.username}`
+								.slice(0, 1)
+								.toLocaleUpperCase()}
+						</Avatar>
 					</IconButton>
 				</Tooltip>
 			</Box>
