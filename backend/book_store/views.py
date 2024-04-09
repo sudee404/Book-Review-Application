@@ -2,12 +2,11 @@ from rest_framework import status
 from .serializers import AuthorSerializer, BookReviewSerializer, BookSerializer, BookClubSerializer, NotificationSerializer, UserBookSerializer, UserDataSerializer
 from django.contrib.auth import authenticate, logout, get_user_model
 from rest_framework import status, views, viewsets
-from rest_framework.parsers import MultiPartParser
+from rest_framework.parsers import MultiPartParser,FormParser
 from .serializers import LoginSerializer, UserSerializer
 from .models import Author, Book, BookReview, BookClub, Notification, UserBook, UserProfile
 from rest_framework.response import Response
 from django.conf import settings
-from jwt import encode as jwt_encode
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from . import models, serializers
 import jwt
@@ -181,64 +180,19 @@ class BookClubViewSet(viewsets.ModelViewSet):
     """This is the viewset that handles all actions at /books endpoint"""
     queryset = BookClub.objects.all()
     serializer_class = BookClubSerializer
-    permission_classes = []
-    parser_classes = [MultiPartParser]
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    parser_classes = [MultiPartParser, FormParser]
+    
+    def get_serializer_class(self):
+        if self.action == 'create':
+            return serializers.CreateBookClubSerializer
+        return super().get_serializer_class()
+    
+    def perform_create(self, serializer):
+        # pass user to serializer
+        serializer.save(owner=self.request.user)
+        return super().perform_create(serializer)
 
-    def list(self, request, *args, **kwargs):
-        queryset = super().get_queryset()
-        owner_id = request.query_params.get('owner', None)
-        member_id = request.query_params.get('member', None)
-
-        if owner_id:
-            queryset = queryset.filter(owner_id=owner_id)
-        if member_id:
-            queryset = queryset.filter(members__id=member_id)
-
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.serializer_class(
-                page, many=True, context={'request': request})
-            return self.get_paginated_response(serializer.data)
-
-        # if no results were found, return an empty response with next pointing to the second page
-        paginator = self.pagination_class()
-        paginator.page.number = 2
-        return paginator.get_paginated_response([])
-
-    def create(self, request, *args, **kwargs):
-        # Get the token from the Authorization header
-
-        try:
-            token = request.META.get('HTTP_AUTHORIZATION', '').split(' ')[1]
-
-            # Decode the token
-            payload = jwt.decode(
-                token, settings.JWT_SECRET_KEY, settings.JWT_ALGORITHM)
-
-            # Set the user to the current authenticated user
-            user = User.objects.get(username=payload['username'])
-            # Create Club
-            name = request.data.get('name')
-            description = request.data.get('description')
-            poster = request.FILES.get('poster')
-
-            # Create a new BookClub object with the given fields
-            club = BookClub(name=name, description=description,
-                            poster=poster, owner=user)
-            club.save()
-
-            return Response({'message': 'club added successfully'}, status=status.HTTP_201_CREATED)
-
-        except jwt.ExpiredSignatureError:
-            return Response({'error': 'Token expired'}, status=status.HTTP_401_UNAUTHORIZED)
-
-        except jwt.InvalidSignatureError:
-            return Response({'error': 'Invalid token signature'}, status=status.HTTP_401_UNAUTHORIZED)
-
-        except jwt.DecodeError:
-            return Response({'error': 'Invalid token'}, status=status.HTTP_401_UNAUTHORIZED)
-        except IndexError:
-            return Response({'error': 'No token found, Kindly log in'}, status=status.HTTP_307_TEMPORARY_REDIRECT)
 
 
 class ClubMembersView(views.APIView):
