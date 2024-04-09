@@ -86,7 +86,8 @@ class BookClub(models.Model):
     members = models.ManyToManyField(User, related_name='book_clubs')
     created_at = models.DateTimeField(auto_now_add=True)
     poster = models.ImageField(upload_to='poster/', default='default.png')
-    private = models.BooleanField(default=False)  # True if club is open to join
+    # True if club is open to join
+    private = models.BooleanField(default=False)
     owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 
     class Meta:
@@ -98,7 +99,7 @@ class BookClub(models.Model):
 
     def __str__(self):
         """Unicode representation of BookClub."""
-        self.name
+        return self.name
 
 
 class UserBook(models.Model):
@@ -155,8 +156,11 @@ class BookVote(models.Model):
 class Notification(models.Model):
     """Model definition for Notification."""
 
-    recipient = models.ForeignKey(User, on_delete=models.CASCADE)
+    recipient = models.ForeignKey(
+        User, related_name='notifications', on_delete=models.CASCADE)
     message = models.TextField()
+    link = models.CharField(max_length=150,null=True)
+    read = models.BooleanField(default=False)
 
     class Meta:
         """Meta definition for Notification."""
