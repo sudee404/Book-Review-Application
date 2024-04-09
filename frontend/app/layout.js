@@ -9,11 +9,10 @@ import "react-toastify/dist/ReactToastify.css";
 import { SessionProvider } from "next-auth/react";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
 import Providers from "./providers";
-
+import { NotificationContextProvider } from "../context/NotificationContext";
 
 export default function RootLayout({ children }) {
 	const [mode, setMode] = React.useState("light");
-
 
 	React.useEffect(() => {
 		if (typeof window !== "undefined") {
@@ -38,7 +37,7 @@ export default function RootLayout({ children }) {
 	const theme = React.useMemo(() => createTheme(getLPTheme(mode)), [mode]);
 
 	return (
-		<html lang="en">
+		<html lang="en" suppressHydrationWarning={true}>
 			<head>
 				{/* meta tags */}
 				<meta charSet="utf-8" />
@@ -59,7 +58,9 @@ export default function RootLayout({ children }) {
 						<ThemeProvider theme={theme}>
 							<CssBaseline />
 							<SessionProvider>
-								<Providers>{children}</Providers>
+								<NotificationContextProvider>
+									<Providers>{children}</Providers>
+								</NotificationContextProvider>
 							</SessionProvider>
 						</ThemeProvider>
 					</ColorModeContext.Provider>
