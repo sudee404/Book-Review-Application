@@ -35,19 +35,6 @@ function AppAppBar({ mode, toggleColorMode }) {
 		setOpen(newOpen);
 	};
 
-	const scrollToSection = (sectionId) => {
-		const sectionElement = document.getElementById(sectionId);
-		const offset = 128;
-		if (sectionElement) {
-			const targetScroll = sectionElement.offsetTop - offset;
-			sectionElement.scrollIntoView({ behavior: "smooth" });
-			window.scrollTo({
-				top: targetScroll,
-				behavior: "smooth",
-			});
-			setOpen(false);
-		}
-	};
 
 	return (
 		<div>
@@ -147,18 +134,7 @@ function AppAppBar({ mode, toggleColorMode }) {
 												My Books
 											</Typography>
 										</MenuItem>
-										<MenuItem
-											as={Link}
-											href="/notifications"
-											sx={{ py: "6px", px: "12px" }}
-										>
-											<Typography
-												variant="body2"
-												color="text.primary"
-											>
-												Notifications
-											</Typography>
-										</MenuItem>
+										
 									</>
 								)}
 							</Box>
@@ -249,11 +225,7 @@ function AppAppBar({ mode, toggleColorMode }) {
 									>
 										My Books
 									</MenuItem>
-									<MenuItem
-										
-									>
-										Notifications
-									</MenuItem>
+									
 									
 									<Divider />
 									<MenuItem>
