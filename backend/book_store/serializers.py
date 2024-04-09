@@ -35,13 +35,13 @@ class UserDataSerializer(serializers.ModelSerializer):
 
         model = models.User
         fields = ('username', 'email', 'fullname', 'image', 'bio')
-        
+
     def get_fullname(self, obj):
         return f"{obj.first_name} {obj.last_name}"
-    
+
     def get_image(self, obj):
         return obj.profile.image.url if obj.profile.image else None
-    
+
     def get_bio(self, obj):
         return obj.profile.bio
 
@@ -69,8 +69,9 @@ class CreateBookReviewSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = BookReview
-        fields = ('rating','review')
-        
+        fields = ('rating', 'review')
+
+
 class UserBookSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -84,7 +85,16 @@ class AuthorSerializer(serializers.ModelSerializer):
         fields = ('__all__')
 
 
+class CreateBookClubSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = BookClub
+        exclude = ('owner','members')
+        
 class BookClubSerializer(serializers.ModelSerializer):
+    owner = UserDataSerializer()
+    members = UserDataSerializer(many=True)
+
     class Meta:
         model = BookClub
         fields = ('__all__')
