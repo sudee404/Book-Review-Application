@@ -8,21 +8,17 @@ import Pricing from "../../../components/sections/Pricing";
 import Features from "../../../components/sections/Features";
 import Testimonials from "../../../components/sections/Testimonials";
 import FAQ from "../../../components/sections/FAQ";
+import ReadingList from "../../../components/profile/ReadingList";
+import PlanningToRead from "../../../components/profile/PlanningToRead";
 
 export default function Page() {
 	return (
 		<>
-			<Hero />
 			<Box>
-				<Features />
+				<ReadingList />
 				<Divider />
-				<Testimonials />
+				<PlanningToRead />
 				<Divider />
-				<Highlights />
-				<Divider />
-				<Pricing />
-				<Divider />
-				<FAQ />
 			</Box>
 		</>
 	);

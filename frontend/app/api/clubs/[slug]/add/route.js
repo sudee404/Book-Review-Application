@@ -10,7 +10,6 @@ export async function GET(request, { params }) {
 	if (session) {
 		try {
 			const query = request.nextUrl.searchParams;
-			console.log(query);
 			const response = await addBook(slug, session?.accessToken, query);
 			return new Response(JSON.stringify(response.data), { status: 200 });
 		} catch (error) {

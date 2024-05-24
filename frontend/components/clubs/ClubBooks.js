@@ -3,7 +3,6 @@ import BookCard, { BookCardPlaceHolder, BookIdCard } from "../book/BookCard";
 import Masonry from "@mui/lab/Masonry";
 
 export default function ClubBooks({ books, loading, isOwner, isMember }) {
-	console.log("books", books);
 	return (
 		<Container sx={{ my: 3 }}>
 			<Typography variant="h4" gutterBottom>

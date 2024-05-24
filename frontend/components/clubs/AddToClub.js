@@ -109,7 +109,7 @@ export default function AddToClub({ bookId }) {
 				justifyContent="center"
 			>
 				{isLoading ? (
-					Array.from({ length: 3 }).map((club) => (
+					Array.from({ length: 3 }).map((_,club) => (
 						<Grid item key={club} xs={12} md={4}>
 							<ClubCardPlaceHolder />
 						</Grid>

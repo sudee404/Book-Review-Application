@@ -46,7 +46,7 @@ export default function Hero() {
 							fontSize: "clamp(3.5rem, 10vw, 4rem)",
 						}}
 					>
-						Our latest&nbsp;
+						Welcome To &nbsp;
 						<Typography
 							component="span"
 							variant="h1"
@@ -58,7 +58,7 @@ export default function Hero() {
 										: "primary.light",
 							}}
 						>
-							products
+							ReadUp
 						</Typography>
 					</Typography>
 					<Typography
@@ -69,42 +69,9 @@ export default function Hero() {
 							width: { sm: "100%", md: "80%" },
 						}}
 					>
-						Explore our cutting-edge dashboard, delivering
-						high-quality solutions tailored to your needs. Elevate
-						your experience with top-tier features and services.
-					</Typography>
-					<Stack
-						direction={{ xs: "column", sm: "row" }}
-						alignSelf="center"
-						spacing={1}
-						useFlexGap
-						sx={{ pt: 2, width: { xs: "100%", sm: "auto" } }}
-					>
-						<TextField
-							id="outlined-basic"
-							hiddenLabel
-							size="small"
-							variant="outlined"
-							aria-label="Enter your email address"
-							placeholder="Your email address"
-							inputProps={{
-								autoComplete: "off",
-							}}
-						/>
-						<Button variant="contained" color="primary">
-							Start now
-						</Button>
-					</Stack>
-					<Typography
-						variant="caption"
-						textAlign="center"
-						sx={{ opacity: 0.8 }}
-					>
-						By clicking &quot;Start now&quot; you agree to our&nbsp;
-						<Link href="#" color="primary">
-							Terms & Conditions
-						</Link>
-						.
+						Find your next great read with us. Explore our large
+						library of books at your leisure and interact with like
+						minded people in the book clubs
 					</Typography>
 				</Stack>
 				<Box
@@ -116,9 +83,11 @@ export default function Hero() {
 						width: "100%",
 						backgroundImage:
 							theme.palette.mode === "light"
-								? 'url("/static/images/templates/templates-images/hero-light.png")'
-								: 'url("/static/images/templates/templates-images/hero-dark.png")',
-						backgroundSize: "cover",
+								? 'url("/assets/images/books/img1.png")'
+								: 'url("/assets/images/books/img1.png")',
+						backgroundSize: "contain",
+						backgroundRepeat: "no-repeat",
+						backgroundPosition: "center",
 						borderRadius: "10px",
 						outline: "1px solid",
 						outlineColor:

@@ -87,7 +87,7 @@ function AppAppBar({ mode, toggleColorMode }) {
 
 							<Box sx={{ display: { xs: "none", md: "flex" } }}>
 								<MenuItem
-									// as={Link}
+									as={Link}
 									href="/"
 									sx={{ py: "6px", px: "12px" }}
 								>

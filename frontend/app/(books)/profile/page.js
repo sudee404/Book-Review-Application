@@ -2,12 +2,12 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
-import ClubForm from "../../../components/clubs/ClubForm";
+import UserForm from "../../../components/profile/UserForm";
 
 export default function Page() {
 	return (
 		<Box>
-			<ClubForm />
+			<UserForm />
 			<Divider />
 			
 		</Box>

@@ -1,13 +1,13 @@
 import * as React from "react";
-import { alpha } from "@mui/material";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
+import { Card, CardContent, Grid, alpha, Box } from "@mui/material";
 import Container from "@mui/material/Container";
-import Link from "@mui/material/Link";
 import Stack from "@mui/material/Stack";
-import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import JoinDialog from "./JoinDialog";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import MenuBookIcon from "@mui/icons-material/MenuBook";
+import EventIcon from "@mui/icons-material/Event"
+import PersonIcon from "@mui/icons-material/Person";
 
 export default function ClubBanner({
 	club,
@@ -66,16 +66,7 @@ export default function ClubBanner({
 							{club?.name}
 						</Typography>
 					</Typography>
-					<Typography
-						textAlign="center"
-						color="text.secondary"
-						sx={{
-							alignSelf: "center",
-							width: { sm: "100%", md: "80%" },
-						}}
-					>
-						{club?.description}
-					</Typography>
+
 					{!(isOwner || isMember) && (
 						<Stack
 							direction={{ xs: "column", sm: "row" }}
@@ -113,6 +104,90 @@ export default function ClubBanner({
 								: `0 0 24px 12px ${alpha("#033363", 0.2)}`,
 					})}
 				/>
+				<Grid container spacing={2} mt={3}>
+					<Grid item sm={12} md={6}>
+						<Typography gutterBottom variant="h5" component="div">
+							Description
+						</Typography>
+						<Card>
+							<CardContent>
+								<Typography
+									color="text.secondary"
+									sx={{
+										alignSelf: "center",
+										width: { sm: "100%", md: "80%" },
+									}}
+								>
+									{club?.description}
+								</Typography>
+							</CardContent>
+						</Card>
+					</Grid>
+					<Grid item sm={12} md={6}>
+						<Typography gutterBottom variant="h5" component="div">
+							Details
+						</Typography>
+						<Card>
+							<CardContent>
+								<Box
+									display={"flex"}
+									gap={2}
+									mt={1}
+									justifyContent={"space-between"}
+								>
+									<Box display={"flex"} gap={1}>
+										<EventIcon fontSize="small" />{" "}
+										<Typography
+											variant="body2"
+											color="text.blue"
+										>
+											{new Date(
+												club?.created_at
+											).toDateString()}
+										</Typography>
+									</Box>
+
+									<Box display={"flex"} gap={1}>
+										<PersonIcon fontSize="small" />{" "}
+										<Typography
+											variant="body2"
+											color="text.blue"
+										>
+											{club?.members?.length}
+										</Typography>
+									</Box>
+								</Box>
+
+								<Box
+									display={"flex"}
+									gap={2}
+									mt={1}
+									justifyContent={"space-between"}
+								>
+									<Box display={"flex"} gap={1}>
+										<AccountCircleIcon fontSize="small" />{" "}
+										<Typography
+											variant="body2"
+											color="text.blue"
+										>
+											{club?.owner?.username}
+										</Typography>
+									</Box>
+
+									<Box display={"flex"} gap={1}>
+										<MenuBookIcon fontSize="small" />{" "}
+										<Typography
+											variant="body2"
+											color="text.blue"
+										>
+											{club?.books?.length}
+										</Typography>
+									</Box>
+								</Box>
+							</CardContent>
+						</Card>
+					</Grid>
+				</Grid>
 			</Container>
 		</Box>
 	);

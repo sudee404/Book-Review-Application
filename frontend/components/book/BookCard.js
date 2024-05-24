@@ -64,6 +64,7 @@ export default function BookCard({ book }) {
 
 export function BookIdCard({ bookId }) {
 	const router = useRouter();
+
 	const { data:book, isLoading } = useQuery({
 		queryKey: ["book", bookId],
 		queryFn: async () => {
