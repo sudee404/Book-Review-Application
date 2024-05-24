@@ -158,9 +158,11 @@ class Notification(models.Model):
 
     recipient = models.ForeignKey(
         User, related_name='notifications', on_delete=models.CASCADE)
+    subject = models.CharField(max_length=150, null=True)
     message = models.TextField()
     link = models.CharField(max_length=150,null=True)
     read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True,null=True)
 
     class Meta:
         """Meta definition for Notification."""

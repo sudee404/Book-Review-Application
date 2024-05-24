@@ -6,13 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('book_store', '0017_notification_read_alter_notification_recipient'),
+        ('book_store', '0018_notification_link'),
     ]
 
     operations = [
         migrations.AddField(
             model_name='notification',
-            name='link',
+            name='created_at',
+            field=models.DateTimeField(auto_now_add=True, null=True),
+        ),
+        migrations.AddField(
+            model_name='notification',
+            name='subject',
             field=models.CharField(max_length=150, null=True),
         ),
     ]
