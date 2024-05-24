@@ -23,6 +23,22 @@ class UserSerializer(serializers.ModelSerializer):
 
         return user
 
+    def validate_password(self, value):
+        # Add password validation logic here
+        # For example, you can check if the password meets certain requirements
+        # and raise a validation error if it doesn't
+        if len(value) < 8:
+            raise serializers.ValidationError("Password must be at least 8 characters long.")
+        if not any(char.isdigit() for char in value):
+            raise serializers.ValidationError("Password must contain at least one digit.")
+        if not any(char.isupper() for char in value):
+            raise serializers.ValidationError("Password must contain at least one uppercase letter.")
+        if not any(char.islower() for char in value):
+            raise serializers.ValidationError("Password must contain at least one lowercase letter.")
+        if value.lower() in ['password', '12345678', 'qwerty']:
+            raise serializers.ValidationError("Password is too common.")
+        return value
+
 
 class UserDataSerializer(serializers.ModelSerializer):
     """Serializer definition for UserData."""

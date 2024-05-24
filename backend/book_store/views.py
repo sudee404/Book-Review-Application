@@ -173,7 +173,14 @@ class UserViewSet(viewsets.ModelViewSet):
     """This is the viewset that handles all actions at /users endpoint"""
     queryset = get_user_model().objects.all()
     serializer_class = UserSerializer
-    permission_classes = []
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    
+    def perform_update(self, serializer):
+        profile = self.request.user.profile
+        profile.bio = self.request.data.get('bio', profile.bio)
+        profile.image = self.request.data.get('image', profile.image)
+        profile.save()
+        return super().perform_update(serializer)
 
 
 class BookClubViewSet(viewsets.ModelViewSet):

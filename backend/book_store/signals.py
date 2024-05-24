@@ -19,23 +19,23 @@ def create_notifications(sender, instance, created, **kwargs):
         for member in members:
             Notification.objects.create(
                 recipient=member,
+                subject=instance.club.name,
                 message=f"New book added to {instance.club.name}",
-                link=f"/club/{instance.club.id}",
+                link=f"/book-clubs/{instance.club.id}",
             )
 
 
 @receiver(post_save, sender=Notification)
 def send_notification(sender, instance, created, **kwargs):
-    if created:
-        # send notification
-        group_name = instance.recipient.username + "__notifications"
-        channel_layer = get_channel_layer()
-        count = instance.recipient.notifications.filter(read=False).count()
-        # pass serialised notification
-        async_to_sync(channel_layer.group_send)(
-            group_name,
-            {
-                "type": "unread_notifications",
-                "count": count
-            },
-        )
+    # send notification
+    group_name = instance.recipient.username + "__notifications"
+    channel_layer = get_channel_layer()
+    count = instance.recipient.notifications.filter(read=False).count()
+    # pass serialised notification
+    async_to_sync(channel_layer.group_send)(
+        group_name,
+        {
+            "type": "unread_notifications",
+            "count": count
+        },
+    )
